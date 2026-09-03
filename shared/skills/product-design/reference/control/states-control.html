@@ -1,0 +1,25 @@
+<!doctype html><meta charset="utf-8"><title>states control</title>
+<!-- Fixture for states-force.mjs. Fetches /api/items and renders empty,
+     loading, error and dense states from whatever the harness intercepts. -->
+<style>
+  body{margin:0;background:#101014;color:#e9e9ee;font:14px/1.5 ui-sans-serif,system-ui}
+  header{padding:16px;border-bottom:1px solid #26262e;font-weight:600}
+  tr:hover{background:#1c1c22}
+  td{padding:8px 16px;border-bottom:1px solid #1e1e26}
+  .msg{padding:48px 16px;text-align:center;color:#8b8b99}
+  .err{color:#ff8080}
+  .sk{height:14px;margin:12px 16px;background:#1e1e26;border-radius:4px}
+</style>
+<header>Items</header>
+<div id="root"><div class="sk"></div><div class="sk"></div><div class="sk"></div></div>
+<script>
+  fetch('/api/items')
+    .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json() })
+    .then(items => {
+      const root = document.getElementById('root')
+      if (!items.length) { root.innerHTML = '<div class="msg">No items match this filter.</div>'; return }
+      root.innerHTML = '<table style="width:100%;border-collapse:collapse">' +
+        items.map(i => `<tr><td>${i.id}</td><td>${i.name || 'Item ' + i.id}</td></tr>`).join('') + '</table>'
+    })
+    .catch(e => { document.getElementById('root').innerHTML = `<div class="msg err">Could not load items. ${e.message}</div>` })
+</script>

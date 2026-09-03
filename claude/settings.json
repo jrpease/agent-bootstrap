@@ -1,0 +1,55 @@
+{
+  "permissions": {
+    "defaultMode": "auto",
+    "deny": [
+      "Read(**/.env)",
+      "Read(**/.env.*)",
+      "Read(**/secrets/**)",
+      "Read(**/*.pem)",
+      "Read(~/.zshrc.local)"
+    ],
+    "allow": [
+      "Bash(claude plugin:*)",
+      "Bash(claude doctor:*)"
+    ]
+  },
+  "model": "opus[1m]",
+  "statusLine": {
+    "type": "command",
+    "command": "bash \"$(dirname \"$(readlink \"$CLAUDE_CONFIG_DIR/CLAUDE.md\" || readlink \"$HOME/.claude/CLAUDE.md\")\")/statusline-command.sh\""
+  },
+  "enabledPlugins": {
+    "figma@claude-plugins-official": true,
+    "vercel@claude-plugins-official": true,
+    "frontend-design@claude-plugins-official": false,
+    "throughline@throughline-marketplace": true,
+    "brainforge@brainforge": true,
+    "synapse@brainforge": true
+  },
+  "extraKnownMarketplaces": {
+    "claude-plugins-official": {
+      "source": {
+        "source": "github",
+        "repo": "anthropics/claude-plugins-official"
+      },
+      "autoUpdate": true
+    },
+    "throughline-marketplace": {
+      "source": {
+        "source": "github",
+        "repo": "jrpease/throughline"
+      },
+      "autoUpdate": true
+    },
+    "brainforge": {
+      "source": {
+        "source": "github",
+        "repo": "jrpease/brainforge"
+      },
+      "autoUpdate": true
+    }
+  },
+  "effortLevel": "high",
+  "skipWorkflowUsageWarning": true,
+  "agentPushNotifEnabled": true
+}

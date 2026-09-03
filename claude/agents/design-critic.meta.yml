@@ -1,0 +1,4 @@
+# Claude Code projection for shared/agents/design-critic.md.
+# The shared body carries no pinning; this is where the tier is expressed.
+model: fable
+tools: Read, Glob, Bash

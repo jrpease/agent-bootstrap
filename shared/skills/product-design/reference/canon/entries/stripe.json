@@ -1,0 +1,43 @@
+{
+  "entry": "Stripe",
+  "surface": "desktop web",
+  "acquisition": "chrome-dom",
+  "hardScreen": "payments list, live account",
+  "dataVolume": "21 rows visible, real live-mode account",
+  "craft": {
+    "typeContrast": 2.33,
+    "typeSizes": [
+      12,
+      14,
+      16,
+      28
+    ],
+    "typeWeights": [
+      "400",
+      "500",
+      "600",
+      "700"
+    ],
+    "fontSizeMedian": 14,
+    "interactiveCount": 250,
+    "interactivePerMegapixel": 151,
+    "elementsInView": 1890,
+    "spacingSteps": [
+      4,
+      6,
+      8,
+      10,
+      11,
+      12,
+      16,
+      20,
+      24,
+      32
+    ],
+    "spacingStepCount": 10,
+    "colourCount": 13,
+    "componentReuseRatio": 0.912
+  },
+  "moments": [],
+  "screenKind": "data-table"
+}

@@ -1,0 +1,9 @@
+{
+ "entry": "Corner iOS (corner-flow-1)",
+ "surface": "ios",
+ "acquisition": "mobbin-video",
+ "clipKind": "onboarding-promo",
+ "craft": {},
+ "moments": [],
+ "excluded": "onboarding promo reel \u2014 kinetic typography, not in-app product motion"
+}

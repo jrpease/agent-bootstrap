@@ -1,0 +1,31 @@
+<!doctype html><meta charset="utf-8"><title>dom control</title>
+<!-- Control fixture for measure-dom.js. Known-true by construction:
+     typeContrast 4.0 (48px / 12px) · spacingSteps [8,16] · interactiveCount 7
+     componentReuse high (6 identical .card) · motion: 3 participants,
+     2 stagger groups, 400ms, 120px travel -->
+<style>
+  body { margin:0; background:#101014; color:#e8e8ea; font-family:system-ui; }
+  h1 { font-size:48px; margin:0; padding:16px }
+  .card { padding:16px; margin-top:8px; background:#1c1c22; border-top:1px solid #2a2a33 }
+  .card p { font-size:16px; padding:8px; margin:0 }
+  small { font-size:12px; padding:8px; display:block; color:#8a8a99 }
+  .box { position:absolute; left:40px; width:60px; height:60px; background:#7cf;
+         transition: transform 200ms linear; }
+  #m1{top:520px} #m2{top:600px} #m3{top:680px}
+  body.go .box { transform: translateX(120px) }
+</style>
+<h1>Control</h1>
+<div class="card"><p>one</p><a href="#">link</a></div>
+<div class="card"><p>two</p><a href="#">link</a></div>
+<div class="card"><p>three</p><a href="#">link</a></div>
+<div class="card"><p>four</p><button>go</button></div>
+<div class="card"><p>five</p><button>go</button></div>
+<div class="card"><p>six</p><input aria-label="x"></div>
+<small>smallest rendered text on the page</small>
+<div class="box" id="m1"></div><div class="box" id="m2"></div><div class="box" id="m3"></div>
+<script>
+  document.getElementById('m3').style.transitionDelay = '200ms'
+  window.__go = () => document.body.classList.add('go')
+</script>
+<script src="../canon/measure-craft.js"></script>
+<script src="../canon/measure-motion.js"></script>

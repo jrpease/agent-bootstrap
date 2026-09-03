@@ -1,0 +1,7 @@
+{ "entry": "Notion", "surface": "desktop web", "acquisition": "chrome-dom", "screenKind": "document-editor",
+  "hardScreen": "personal page, real workspace",
+  "note": "operator-supplied URL, confirmed app. surface-check flagged MARKETING on a 78px page title — a false positive: document editors legitimately carry display type. Its higher contrast is real signal about editor surfaces, not contamination.",
+  "craft": { "typeContrast": 6.5, "typeSizes": [12,14,16,18,20,40,78], "typeWeights": ["400","500","600","700"], "fontSizeMedian": 14,
+             "interactiveCount": 65, "interactivePerMegapixel": 39.3, "elementsInView": 578,
+             "spacingSteps": [4,5,6,8,10,12], "spacingStepCount": 6, "colourCount": 11, "componentReuseRatio": 0.872 },
+  "moments": [] }

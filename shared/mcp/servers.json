@@ -1,0 +1,29 @@
+{
+  "_README": [
+    "Servers registered into both agents. Two optional scoping keys, resolved in",
+    "this order: `agents` selects the agent (default [\"claude\",\"codex\"]);",
+    "`accounts` then selects homes within that agent BY NAME, where the default",
+    "home is called \"default\" on both sides.",
+    "Claude registration: lib/60-mcp.sh. Codex: tools/codex-config-merge.py.",
+    "shopify-dev-mcp below is scoped to a \"work\" account purely to show the",
+    "`accounts` key in use \u2014 rename or drop it to match your own accounts."
+  ],
+  "mcpServers": {
+    "composio": {
+      "type": "http",
+      "url": "https://connect.composio.dev/mcp"
+    },
+    "shopify-dev-mcp": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@shopify/dev-mcp@latest"
+      ],
+      "env": {},
+      "accounts": [
+        "work"
+      ]
+    }
+  }
+}

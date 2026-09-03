@@ -1,0 +1,6 @@
+{ "entry": "Stripe (dashboard)", "surface": "desktop web", "acquisition": "chrome-dom", "screenKind": "dashboard",
+  "hardScreen": "account home, live account",
+  "craft": { "typeContrast": 2.33, "typeSizes": [12,14,16,20,28], "typeWeights": ["400","500","600","700"], "fontSizeMedian": 14,
+             "interactiveCount": 45, "interactivePerMegapixel": 27.2, "elementsInView": 534,
+             "spacingSteps": [4,6,8,10,16,20,24,28,32], "spacingStepCount": 9, "colourCount": 13, "componentReuseRatio": 0.511 },
+  "moments": [] }

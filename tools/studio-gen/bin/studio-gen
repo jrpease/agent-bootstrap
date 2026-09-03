@@ -1,0 +1,13 @@
+#!/usr/bin/env node
+import { main } from '../src/cli.mjs'
+main(process.argv.slice(2)).catch((e) => {
+  // Some SDK errors (e.g. fal ApiError) carry an empty message; fall back to
+  // the response body / HTTP status so a failed call is never a silent exit.
+  const detail =
+    e?.message ||
+    (e?.body ? JSON.stringify(e.body) : '') ||
+    (e?.status ? `HTTP ${e.status}` : '') ||
+    String(e)
+  console.error(detail)
+  process.exit(1)
+})

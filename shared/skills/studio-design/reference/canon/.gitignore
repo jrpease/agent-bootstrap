@@ -1,0 +1,11 @@
+raw.tsv
+studios.json
+slate.tsv
+live.tsv
+shots.json
+shots/
+sheets/
+sweep.log
+_sheet.html
+node_modules
+__pycache__/

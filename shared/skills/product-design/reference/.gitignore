@@ -1,0 +1,12 @@
+node_modules
+captures/
+control/out/
+# Captures are regenerable and large; the canon's authority lives in the
+# ratified text — raw.json, medians.md and entries/ — which stay tracked.
+# Same split as studio-design/reference/canon/.gitignore.
+canon/shots/
+canon/sheets/
+canon/clips/
+*.webm
+*.mp4
+__pycache__/

@@ -1,0 +1,9 @@
+{
+  "_comment": "Control manifest for a11y.mjs. Serve reference/control with `python3 ../serve.py 8732`, then: node ../a11y.mjs a11y-control.json --out out/a11y --expect-fail",
+  "baseUrl": "http://127.0.0.1:8732/",
+  "surfaces": [{ "name": "desktop", "width": 1200, "height": 760 }],
+  "states": [
+    { "state": "control-defects", "screen": "account", "url": "/a11y-control.html",
+      "status": "forceable", "force": { "kind": "none" } }
+  ]
+}

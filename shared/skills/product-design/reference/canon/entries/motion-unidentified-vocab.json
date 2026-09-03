@@ -1,0 +1,111 @@
+{
+ "entry": "Corner iOS (unidentified-vocab)",
+ "surface": "ios",
+ "acquisition": "mobbin-video",
+ "clipKind": "in-app",
+ "craft": {},
+ "moments": [
+  {
+   "entry": "unidentified-vocab",
+   "momentType": "transition",
+   "durationMs": 533,
+   "coverage": 0.416,
+   "travelFraction": 0.055,
+   "participants": 24,
+   "choreographyDepth": 1,
+   "provenance": {
+    "durationMs": "derived",
+    "coverage": "derived",
+    "travel": "derived",
+    "participants": "derived",
+    "choreographyDepth": "derived",
+    "momentType": "operator-from-contact-sheet"
+   }
+  },
+  {
+   "entry": "unidentified-vocab",
+   "momentType": "transition",
+   "durationMs": 633,
+   "coverage": 0.768,
+   "travelFraction": 0.011,
+   "participants": 6,
+   "choreographyDepth": 2,
+   "provenance": {
+    "durationMs": "derived",
+    "coverage": "derived",
+    "travel": "derived",
+    "participants": "derived",
+    "choreographyDepth": "derived",
+    "momentType": "operator-from-contact-sheet"
+   }
+  },
+  {
+   "entry": "unidentified-vocab",
+   "momentType": "transition",
+   "durationMs": 650,
+   "coverage": 0.671,
+   "travelFraction": 0.053,
+   "participants": 2,
+   "choreographyDepth": 2,
+   "provenance": {
+    "durationMs": "derived",
+    "coverage": "derived",
+    "travel": "derived",
+    "participants": "derived",
+    "choreographyDepth": "derived",
+    "momentType": "operator-from-contact-sheet"
+   }
+  },
+  {
+   "entry": "unidentified-vocab",
+   "momentType": "feedback",
+   "durationMs": 967,
+   "coverage": 0.421,
+   "travelFraction": 0.181,
+   "participants": 8,
+   "choreographyDepth": 3,
+   "provenance": {
+    "durationMs": "derived",
+    "coverage": "derived",
+    "travel": "derived",
+    "participants": "derived",
+    "choreographyDepth": "derived",
+    "momentType": "operator-from-contact-sheet"
+   }
+  },
+  {
+   "entry": "unidentified-vocab",
+   "momentType": "feedback",
+   "durationMs": 183,
+   "coverage": 0.087,
+   "travelFraction": 0.001,
+   "participants": 3,
+   "choreographyDepth": 2,
+   "provenance": {
+    "durationMs": "derived",
+    "coverage": "derived",
+    "travel": "derived",
+    "participants": "derived",
+    "choreographyDepth": "derived",
+    "momentType": "operator-from-contact-sheet"
+   }
+  },
+  {
+   "entry": "unidentified-vocab",
+   "momentType": "reward",
+   "durationMs": 1467,
+   "coverage": 0.486,
+   "travelFraction": 0.008,
+   "participants": 13,
+   "choreographyDepth": 2,
+   "provenance": {
+    "durationMs": "derived",
+    "coverage": "derived",
+    "travel": "derived",
+    "participants": "derived",
+    "choreographyDepth": "derived",
+    "momentType": "operator-from-contact-sheet"
+   }
+  }
+ ]
+}

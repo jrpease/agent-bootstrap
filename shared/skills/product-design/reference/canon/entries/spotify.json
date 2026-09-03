@@ -1,0 +1,6 @@
+{ "entry": "Spotify", "surface": "desktop web", "acquisition": "chrome-dom", "screenKind": "media-feed",
+  "hardScreen": "web player home",
+  "craft": { "typeContrast": 2.0, "typeSizes": [12,14,16,24], "typeWeights": ["400","700"], "fontSizeMedian": 14,
+             "interactiveCount": 156, "interactivePerMegapixel": 94.2, "elementsInView": 963,
+             "spacingSteps": [4,6,8,12,16,28], "spacingStepCount": 6, "colourCount": 11, "componentReuseRatio": 0.784 },
+  "moments": [] }

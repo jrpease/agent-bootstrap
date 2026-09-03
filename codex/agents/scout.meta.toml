@@ -1,0 +1,4 @@
+# Codex projection for shared/agents/scout.md.
+# No `tools` and no `sandbox_mode`: a Codex agent role parses both and
+# silently discards them, so writing one would only look like a constraint.
+model_reasoning_effort = "low"

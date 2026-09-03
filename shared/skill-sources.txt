@@ -1,0 +1,9 @@
+# One source per line: <repo-url> [skill names...]
+# - URL alone        -> installs ALL skills from the repo (--all)
+# - URL + skill names -> installs only those skills (--skill each)
+# Blank lines and # comments are ignored.
+https://github.com/vercel-labs/skills find-skills
+# Matt Pocock's composable skills — the lean replacements for superpowers.
+# grilling/grill-me cover the brainstorm slot; diagnosing-bugs replaces
+# systematic-debugging; research + prototype fill the thinking/building slots.
+https://github.com/mattpocock/skills grilling grill-me diagnosing-bugs research prototype wait-what

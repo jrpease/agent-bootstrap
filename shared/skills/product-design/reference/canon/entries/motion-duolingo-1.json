@@ -1,0 +1,162 @@
+{
+ "entry": "Corner iOS (duolingo-1)",
+ "surface": "ios",
+ "acquisition": "mobbin-video",
+ "clipKind": "in-app",
+ "craft": {},
+ "moments": [
+  {
+   "entry": "duolingo-1",
+   "momentType": "feedback",
+   "durationMs": 83,
+   "coverage": 0.005,
+   "travelFraction": 0.193,
+   "participants": 3,
+   "choreographyDepth": 1,
+   "provenance": {
+    "durationMs": "derived",
+    "coverage": "derived",
+    "travel": "derived",
+    "participants": "derived",
+    "choreographyDepth": "derived",
+    "momentType": "operator-from-contact-sheet"
+   }
+  },
+  {
+   "entry": "duolingo-1",
+   "momentType": "transition",
+   "durationMs": 550,
+   "coverage": 0.236,
+   "travelFraction": 0.376,
+   "participants": 14,
+   "choreographyDepth": 2,
+   "provenance": {
+    "durationMs": "derived",
+    "coverage": "derived",
+    "travel": "derived",
+    "participants": "derived",
+    "choreographyDepth": "derived",
+    "momentType": "operator-from-contact-sheet"
+   }
+  },
+  {
+   "entry": "duolingo-1",
+   "momentType": "reveal",
+   "durationMs": 433,
+   "coverage": 0.015,
+   "travelFraction": 0.055,
+   "participants": 3,
+   "choreographyDepth": 2,
+   "provenance": {
+    "durationMs": "derived",
+    "coverage": "derived",
+    "travel": "derived",
+    "participants": "derived",
+    "choreographyDepth": "derived",
+    "momentType": "operator-from-contact-sheet"
+   }
+  },
+  {
+   "entry": "duolingo-1",
+   "momentType": "reveal",
+   "durationMs": 350,
+   "coverage": 0.179,
+   "travelFraction": 0.476,
+   "participants": 3,
+   "choreographyDepth": 2,
+   "provenance": {
+    "durationMs": "derived",
+    "coverage": "derived",
+    "travel": "derived",
+    "participants": "derived",
+    "choreographyDepth": "derived",
+    "momentType": "operator-from-contact-sheet"
+   }
+  },
+  {
+   "entry": "duolingo-1",
+   "momentType": "feedback",
+   "durationMs": 150,
+   "coverage": 0.008,
+   "travelFraction": 0.004,
+   "participants": 3,
+   "choreographyDepth": 1,
+   "provenance": {
+    "durationMs": "derived",
+    "coverage": "derived",
+    "travel": "derived",
+    "participants": "derived",
+    "choreographyDepth": "derived",
+    "momentType": "operator-from-contact-sheet"
+   }
+  },
+  {
+   "entry": "duolingo-1",
+   "momentType": "feedback",
+   "durationMs": 300,
+   "coverage": 0.154,
+   "travelFraction": 0.008,
+   "participants": 4,
+   "choreographyDepth": 2,
+   "provenance": {
+    "durationMs": "derived",
+    "coverage": "derived",
+    "travel": "derived",
+    "participants": "derived",
+    "choreographyDepth": "derived",
+    "momentType": "operator-from-contact-sheet"
+   }
+  },
+  {
+   "entry": "duolingo-1",
+   "momentType": "transition",
+   "durationMs": 467,
+   "coverage": 0.251,
+   "travelFraction": 0.367,
+   "participants": 7,
+   "choreographyDepth": 1,
+   "provenance": {
+    "durationMs": "derived",
+    "coverage": "derived",
+    "travel": "derived",
+    "participants": "derived",
+    "choreographyDepth": "derived",
+    "momentType": "operator-from-contact-sheet"
+   }
+  },
+  {
+   "entry": "duolingo-1",
+   "momentType": "reveal",
+   "durationMs": 900,
+   "coverage": 0.148,
+   "travelFraction": 0.229,
+   "participants": 3,
+   "choreographyDepth": 3,
+   "provenance": {
+    "durationMs": "derived",
+    "coverage": "derived",
+    "travel": "derived",
+    "participants": "derived",
+    "choreographyDepth": "derived",
+    "momentType": "operator-from-contact-sheet"
+   }
+  },
+  {
+   "entry": "duolingo-1",
+   "momentType": "reveal",
+   "durationMs": 350,
+   "coverage": 0.057,
+   "travelFraction": 0,
+   "participants": 3,
+   "choreographyDepth": 1,
+   "provenance": {
+    "durationMs": "derived",
+    "coverage": "derived",
+    "travel": "derived",
+    "participants": "derived",
+    "choreographyDepth": "derived",
+    "momentType": "operator-from-contact-sheet"
+   }
+  }
+ ]
+}

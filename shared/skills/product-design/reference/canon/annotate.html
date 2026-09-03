@@ -1,0 +1,153 @@
+<!doctype html><meta charset="utf-8"><title>Moment annotator</title>
+<!--
+  Annotates the three amplitude parameters that pixels cannot carry.
+
+  motion-measure.mjs derives durationMs and coverage from any recording, but
+  participants, choreographyDepth and travel need element identity, which a video
+  does not have. Rather than infer them (which would quietly corrupt the canon
+  medians the amplitude gate grades against), the operator watches each candidate
+  once and records them. This page exists to make that a few minutes rather than
+  an afternoon: it loops each segment in place so you never scrub for a boundary.
+
+  Usage:
+    node ../motion-measure.mjs --segment --video shots/<clip>.mp4 > shots/<clip>.seg.json
+    python3 -m http.server 8731      (from reference/)
+    open http://127.0.0.1:8731/canon/annotate.html?v=shots/<clip>.mp4
+
+  momentType is REQUIRED and never inferred — medians are per type, so a
+  mislabelled moment lands in the wrong distribution.
+-->
+<style>
+  :root { --bg:#0e0e11; --fg:#e9e9ee; --dim:#8b8b99; --line:#26262e; --accent:#7cc4ff }
+  body { margin:0; background:var(--bg); color:var(--fg); font:14px/1.5 ui-sans-serif,system-ui; display:grid; grid-template-columns:auto 1fr; gap:24px; padding:24px }
+  video { max-height:82vh; border-radius:10px; background:#000; position:sticky; top:24px }
+  h1 { font-size:15px; margin:0 0 4px; font-weight:600 }
+  p.sub { margin:0 0 16px; color:var(--dim); font-size:13px }
+  td.flag { color:#d9a441; font-size:12px }
+  table { border-collapse:collapse; width:100% }
+  th, td { text-align:left; padding:7px 8px; border-bottom:1px solid var(--line); font-variant-numeric:tabular-nums }
+  th { color:var(--dim); font-weight:500; font-size:12px }
+  tr.drop { opacity:.4 }
+  tr.active td { background:#1a1a22 }
+  button { background:#1e1e26; color:var(--fg); border:1px solid var(--line); border-radius:6px; padding:4px 9px; cursor:pointer; font:inherit }
+  button:hover { border-color:var(--accent) }
+  select, input { background:#15151b; color:var(--fg); border:1px solid var(--line); border-radius:6px; padding:4px 6px; font:inherit; width:100% }
+  input[type=number] { width:62px }
+  input.derived { color:var(--dim); border-style:dashed }
+  #out { width:100%; height:190px; margin-top:14px; background:#15151b; color:var(--fg); border:1px solid var(--line); border-radius:8px; padding:10px; font:12px/1.45 ui-monospace,monospace }
+  .hint { color:var(--dim); font-size:12px; margin-top:6px }
+</style>
+<video id="v" controls></video>
+<div>
+  <h1>Moment annotator</h1>
+  <p class="sub">Click <b>play</b> to loop a segment in place, then pick its <b>type</b>. That is the
+  only field you must fill.
+  Flagged rows — full-screen changes and runs over 2s — are sorted to the bottom and pre-set to
+  <b>drop</b>; skim them, don't study them. A designed moment resolves; continuous motion does not.</p>
+  <p class="sub"><b>parts</b>, <b>groups</b> and <b>travel</b> are measured from the pixels — you do
+  not count them. Only <b>type</b> needs you, because a reward and a transition can look identical
+  and differ only in meaning. Change a measured number only if it is plainly wrong; an edited value
+  is recorded as <code>annotated</code> rather than <code>derived</code>.</p>
+  <table id="t">
+    <thead><tr><th>#</th><th>start</th><th>dur</th><th>cover</th><th>flag</th><th></th><th>type</th><th>parts</th><th>groups</th><th>travel %</th></tr></thead>
+    <tbody></tbody>
+  </table>
+  <div class="hint">Everything you enter is <code>annotated</code> provenance; duration and coverage stay <code>derived</code>.</div>
+  <textarea id="out" readonly></textarea>
+  <button id="copy" style="margin-top:8px">Copy JSON</button>
+</div>
+<script>
+const qs = new URLSearchParams(location.search)
+const videoPath = qs.get('v')
+const v = document.getElementById('v')
+const tbody = document.querySelector('#t tbody')
+const out = document.getElementById('out')
+v.src = '../' + videoPath
+
+let seg = null, loop = null
+
+const render = () => {
+  tbody.innerHTML = ''
+  // Likely moments first, suspects last: the operator's attention is the scarce
+  // resource, and a flagged run is almost always a scroll they will drop.
+  const order = [...seg.moments].sort((a, b) => (a.suspect ? 1 : 0) - (b.suspect ? 1 : 0))
+  order.forEach(m => {
+    // Pre-set flagged rows to drop so confirming them is a glance, not a decision.
+    if (m.suspect && !m.momentType) m.momentType = 'drop'
+    const sel = t => m.momentType === t ? ' selected' : ''
+    const tr = document.createElement('tr')
+    tr.innerHTML = `<td>${m.index}</td><td>${m.startMs}</td><td>${m.durationMs}</td><td>${m.coverage}</td>
+      <td class="flag">${m.suspect ? m.suspect.split(' —')[0] : ''}</td>
+      <td><button data-play="${m.index}">play</button></td>
+      <td><select data-f="momentType" data-i="${m.index}">
+        <option value=""${sel(undefined)}>—</option>
+        <option${sel('transition')}>transition</option><option${sel('feedback')}>feedback</option>
+        <option${sel('reward')}>reward</option><option${sel('reveal')}>reveal</option>
+        <option value="drop"${sel('drop')}>drop</option></select></td>
+      <td><input type="number" min="0" data-f="participants" data-i="${m.index}" value="${m.participants ?? ''}" class="derived"></td>
+      <td><input type="number" min="1" data-f="choreographyDepth" data-i="${m.index}" value="${m.choreographyDepth ?? ''}" class="derived"></td>
+      <td><input type="number" min="0" max="200" step="1" data-f="travelPct" data-i="${m.index}" value="${m.travelFraction == null ? '' : Math.round(m.travelFraction * 100)}" class="derived" title="% of screen width"></td>`
+    if (m.suspect) tr.classList.add('drop')
+    tr.dataset.idx = m.index
+    tbody.appendChild(tr)
+  })
+  emit()
+}
+
+// Loop the segment in place so no scrubbing is needed to find its boundaries.
+tbody.addEventListener('click', e => {
+  const i = e.target.dataset.play
+  if (i === undefined) return
+  const m = seg.moments[+i]
+  clearInterval(loop)
+  ;[...tbody.rows].forEach(r => r.classList.remove('active'))
+  e.target.closest('tr').classList.add('active')
+  const start = m.startMs / 1000, end = m.endMs / 1000
+  v.currentTime = start; v.play()
+  loop = setInterval(() => { if (v.currentTime >= end) v.currentTime = start }, 30)
+})
+
+const emit = () => {
+  const kept = seg.moments
+    .filter(m => m.momentType && m.momentType !== 'drop')
+    .map(m => ({
+      momentType: m.momentType, durationMs: m.durationMs, coverage: m.coverage,
+      travelFraction: m.travelPct != null ? +(m.travelPct / 100).toFixed(3) : m.travelFraction,
+      participants: m.participants ?? null,
+      choreographyDepth: m.choreographyDepth ?? null,
+      provenance: {
+        durationMs: 'derived', coverage: 'derived',
+        travel: m.overridden?.travel ? 'annotated' : 'derived',
+        participants: m.overridden?.participants ? 'annotated' : 'derived',
+        choreographyDepth: m.overridden?.choreographyDepth ? 'annotated' : 'derived',
+        momentType: 'operator'
+      }
+    }))
+  const dropped = seg.moments.filter(m => m.momentType === 'drop').length
+  const untagged = seg.moments.filter(m => !m.momentType).length
+  out.value = JSON.stringify({ source: videoPath, kept: kept.length, dropped, untagged, moments: kept }, null, 2)
+}
+
+tbody.addEventListener('input', e => {
+  const { f, i } = e.target.dataset
+  if (!f) return
+  const val = e.target.value
+  const m = seg.moments[+i]
+  if (f === 'momentType') { m.momentType = val }
+  else {
+    m[f] = val === '' ? null : +val
+    // An edited measurement is no longer a measurement. Record that, so the
+    // canon can say which numbers came from pixels and which from a person.
+    m.overridden = m.overridden || {}
+    m.overridden[f === 'travelPct' ? 'travel' : f] = true
+    e.target.classList.remove('derived')
+  }
+  emit()
+})
+
+document.getElementById('copy').onclick = () => { out.select(); navigator.clipboard.writeText(out.value) }
+
+fetch('../' + videoPath.replace(/\.\w+$/, '.seg.json'))
+  .then(r => r.json()).then(j => { seg = j; render() })
+  .catch(() => { out.value = 'Could not load the .seg.json beside the video.\nRun: node ../motion-measure.mjs --segment --video ' + videoPath + ' > ' + videoPath.replace(/\.\w+$/, '.seg.json') })
+</script>

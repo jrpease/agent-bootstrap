@@ -1,0 +1,38 @@
+{
+  "entry": "Slack",
+  "surface": "desktop web",
+  "acquisition": "chrome-dom",
+  "hardScreen": "channel view, real workspace",
+  "craft": {
+    "typeContrast": 2.67,
+    "typeSizes": [
+      11,
+      13,
+      15,
+      18,
+      28
+    ],
+    "typeWeights": [
+      "400",
+      "500",
+      "700",
+      "900"
+    ],
+    "fontSizeMedian": 15,
+    "interactiveCount": 64,
+    "interactivePerMegapixel": 38.7,
+    "elementsInView": 525,
+    "spacingSteps": [
+      4,
+      6,
+      8,
+      12,
+      16
+    ],
+    "spacingStepCount": 5,
+    "colourCount": 14,
+    "componentReuseRatio": 0.579
+  },
+  "moments": [],
+  "screenKind": "message-list"
+}

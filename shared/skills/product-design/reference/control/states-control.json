@@ -1,0 +1,113 @@
+{
+  "_comment": "Control manifest for states-force.mjs and a11y.mjs. Serve reference/control with serve.py on 8732, then: node ../states-force.mjs states-control.json --out out/shots",
+  "baseUrl": "http://127.0.0.1:8732/",
+  "surfaces": [
+    {
+      "name": "desktop",
+      "width": 1200,
+      "height": 760
+    }
+  ],
+  "states": [
+    {
+      "state": "empty-no-results",
+      "screen": "items",
+      "url": "/states-control.html",
+      "status": "forceable",
+      "force": {
+        "kind": "route",
+        "pattern": "**/api/items*",
+        "status": 200,
+        "body": "[]"
+      }
+    },
+    {
+      "state": "error-recoverable",
+      "screen": "items",
+      "url": "/states-control.html",
+      "status": "forceable",
+      "force": {
+        "kind": "route",
+        "pattern": "**/api/items*",
+        "status": 500,
+        "body": "{}"
+      }
+    },
+    {
+      "state": "loading-initial",
+      "screen": "items",
+      "url": "/states-control.html",
+      "status": "forceable",
+      "force": {
+        "kind": "route",
+        "pattern": "**/api/items*",
+        "status": 200,
+        "body": "[]",
+        "delayMs": 4000
+      }
+    },
+    {
+      "state": "single-item",
+      "screen": "items",
+      "url": "/states-control.html",
+      "status": "forceable",
+      "force": {
+        "kind": "seed",
+        "pattern": "**/api/items*",
+        "count": 1
+      }
+    },
+    {
+      "state": "dense",
+      "screen": "items",
+      "url": "/states-control.html",
+      "status": "forceable",
+      "force": {
+        "kind": "seed",
+        "pattern": "**/api/items*",
+        "count": 400
+      }
+    },
+    {
+      "_note": "viewport alone renders at the right width and then errors, because nothing stubbed the data. A force method sets ONE condition; this state needs two.",
+      "state": "overflow-narrow",
+      "screen": "items",
+      "url": "/states-control.html",
+      "status": "forceable",
+      "force": {
+        "kind": "viewport",
+        "width": 360,
+        "height": 760,
+        "pattern": "**/api/items*",
+        "body": "[{\"id\":1,\"name\":\"A tournament name long enough that it cannot fit the column budgeted for it\"}]"
+      }
+    },
+    {
+      "state": "row-hover",
+      "screen": "items",
+      "url": "/states-control.html",
+      "status": "forceable",
+      "force": {
+        "kind": "input",
+        "pattern": "**/api/items*",
+        "count": 12,
+        "body": "[{\"id\":1},{\"id\":2},{\"id\":3},{\"id\":4},{\"id\":5},{\"id\":6}]",
+        "steps": [
+          {
+            "kind": "hover",
+            "selector": "tr:nth-child(3)"
+          }
+        ]
+      }
+    },
+    {
+      "state": "permission-denied",
+      "screen": "items",
+      "status": "unforceable",
+      "reason": "control fixture has no auth layer \u2014 stands in for the real unforceable case"
+    }
+  ],
+  "fingerprintPaths": [
+    "states-control.html"
+  ]
+}

@@ -1,0 +1,5 @@
+raw.json
+shots/
+sheets/
+node_modules
+__pycache__/

@@ -1,0 +1,6 @@
+{ "entry": "Acorns", "surface": "desktop web", "acquisition": "chrome-dom", "screenKind": "financial-summary",
+  "hardScreen": "present / portfolio summary",
+  "craft": { "typeContrast": 2.5, "typeSizes": [12,14,16,18,22,30], "typeWeights": ["400","600"], "fontSizeMedian": 14,
+             "interactiveCount": 21, "interactivePerMegapixel": 12.7, "elementsInView": 405,
+             "spacingSteps": [8,10,12,15,20,24,30,50], "spacingStepCount": 8, "colourCount": 7, "componentReuseRatio": 0.647 },
+  "moments": [] }

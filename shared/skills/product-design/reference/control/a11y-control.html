@@ -1,0 +1,35 @@
+<!doctype html><meta charset="utf-8"><title>a11y control</title>
+<!-- Fixture for a11y.mjs. Every defect below is DELIBERATE and each is listed in
+     run-a11y-control.mjs with the axe rule id it must trip. A harness that
+     reports this page clean is broken. -->
+<style>
+  body{margin:0;background:#101014;color:#e9e9ee;font:14px/1.5 ui-sans-serif,system-ui}
+  header{padding:16px;font-weight:600}
+  /* DEFECT: focus ring removed with nothing in its place. Valid CSS, passes
+     every axe rule, makes the keyboard path unusable. This is the one axe
+     cannot see and the focus probe exists for. */
+  button, a, input { outline: none }
+  button{background:#1e1e26;color:#e9e9ee;border:1px solid #26262e;padding:8px 14px;border-radius:6px}
+  /* DEFECT: 2.1:1 against the background — below the 4.5:1 AA floor. */
+  .faint{color:#3a3a44}
+  img{width:64px;height:64px;background:#26262e;display:block}
+</style>
+<header>Account</header>
+
+<!-- DEFECT: no alt attribute -->
+<img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==">
+
+<!-- DEFECT: input with no accessible name -->
+<input type="text" placeholder="Search">
+
+<!-- DEFECT: button whose only content is an icon, no accessible name -->
+<button><svg width="16" height="16" viewBox="0 0 16 16"><path d="M2 2h12v12H2z" fill="currentColor"/></svg></button>
+
+<!-- DEFECT: contrast below AA -->
+<p class="faint">Your session expires in 4 minutes.</p>
+
+<!-- DEFECT: a div acting as a control — not focusable, no role -->
+<div onclick="void 0" style="cursor:pointer;color:#7ac943;padding:8px 0">Resend the code</div>
+
+<!-- present and correct, so a harness that flags everything is also caught -->
+<button aria-label="Save changes">Save</button>

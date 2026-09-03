@@ -1,0 +1,8 @@
+{ "entry": "Airbnb", "surface": "desktop web", "acquisition": "chrome-dom", "screenKind": "marketplace-browse",
+  "hardScreen": "signed-in home / explore grid",
+  "craft": { "typeContrast": 2.55, "typeSizes": [11,12,13,14,20,28], "typeWeights": ["400","500","600","700"],
+             "fontSizeMedian": 12, "interactiveCount": 69, "interactivePerMegapixel": 41.7, "elementsInView": 1111,
+             "spacingSteps": [4,6,8,10,12,14,15,44,48,144], "spacingStepCount": 10, "colourCount": 9,
+             "componentReuseRatio": 0.949 },
+  "note": "highest component reuse in the set (0.949) and the only entry with 12px body text rather than 14. Large spacing steps (44/48/144) are the card-grid rhythm.",
+  "moments": [] }

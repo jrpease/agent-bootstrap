@@ -1,0 +1,32 @@
+# ~/.zshrc.local — machine-specific environment. NOT committed to dotfiles.
+# Add API keys, secrets, and machine-specific PATH additions here, e.g.:
+#   export SOME_API_KEY="..."
+#   export PATH="$HOME/.yarn/bin:$PATH"
+
+# 0 = hold the decryption key until logout/reboot instead of the 1-hour idle default.
+# The agent reads this when it SPAWNS, not per invocation, so a single `lpass login` from a
+# terminal also serves desktop-app and IDE sessions, which never source this file and so
+# cannot set it themselves. Verified 2026-07-30: 62 minutes idle, still decrypted without a
+# prompt. Log in from a terminal, not from inside Claude Code, so the agent inherits this.
+export LPASS_AGENT_TIMEOUT=0
+
+# `lpass login` reads the master password from the TTY. A Claude Code session — or any
+# non-interactive shell — has no TTY, so the read fails immediately and lpass reports
+# "Failed to enter correct password", which looks like a wrong password and is not one.
+# pinentry-mac gives it a native GUI prompt instead, which needs no TTY. Installed by
+# phase 00; resolved here rather than hardcoded, since Intel Macs use /usr/local.
+_pinentry_mac="$(command -v pinentry-mac 2>/dev/null)"
+[[ -n "$_pinentry_mac" ]] && export LPASS_PINENTRY="$_pinentry_mac"
+unset _pinentry_mac
+
+# studio-gen reads generative-asset keys from LastPass, as 'studio-gen/<account>-<provider>'
+# (providers: gemini, fal, openai). Nothing to set here — run `lpass login --trust <email>`
+# once per machine. Which account is used comes from a committed .studio-gen.json in the
+# project; see `studio-gen account`.
+#
+# Optional per-account override, ahead of the vault (rarely needed):
+# export GEMINI_API_KEY_ACME="..."
+#
+# Shared fallback, used (with a warning) when an account has no key of its own —
+# also ahead of the vault's own shared item:
+# export GEMINI_API_KEY="..."

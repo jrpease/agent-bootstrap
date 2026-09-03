@@ -1,0 +1,10 @@
+.DS_Store
+*.local
+node_modules/
+tmp/
+__pycache__/
+
+# Per-account overlays are personal by nature — they name real accounts, private
+# repos, and client work. Keep them local. This is the exact file class that made
+# the upstream repo unsafe to publish.
+claude/accounts/

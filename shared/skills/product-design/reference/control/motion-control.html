@@ -1,0 +1,42 @@
+<!doctype html><meta charset="utf-8"><title>motion control</title>
+<!--
+  Control fixture for motion-measure.mjs. Known-true values, by construction:
+    participants        3   (three boxes move)
+    choreographyDepth   2   (group A at t=0, group B at t=200 — a 200ms gap,
+                             well over the 60ms simultaneity threshold)
+    durationMs        400   (group B starts at 200 and runs 200)
+    travelPx          120   (every box translates exactly 120px)
+  A module that cannot recover these from its own recording cannot be trusted
+  on a real product screen.
+-->
+<style>
+  body { margin:0; background:#111; height:100vh; overflow:hidden; }
+  .box { position:absolute; left:40px; width:80px; height:80px; background:#eee;
+         transition: transform 200ms linear; }
+  #b1 { top: 60px } #b2 { top: 180px } #b3 { top: 300px }
+  body.go .box { transform: translateX(120px); }
+</style>
+<div class="box" id="b1"></div>
+<div class="box" id="b2"></div>
+<div class="box" id="b3"></div>
+<script>
+  const TRAVEL = 120, DUR = 200, GROUP_B_DELAY = 200
+  // Group B is delayed; group A is not. Two stagger groups, by construction.
+  document.getElementById('b3').style.transitionDelay = GROUP_B_DELAY + 'ms'
+
+  // The fixture emits its own trace. It knows its animation parameters exactly,
+  // so this exercises the module's ARITHMETIC against known-true input. Real
+  // DOM instrumentation is interact.mjs's job (Task 6); this is not a stand-in
+  // for it and must not be reused as one.
+  window.__trace = () => {
+    const vp = { w: innerWidth, h: innerHeight }
+    const ev = ['b1','b2','b3'].map((id, i) => {
+      const el = document.getElementById(id)
+      const t0 = id === 'b3' ? GROUP_B_DELAY : 0
+      const r = { x: 40, y: [60,180,300][i], w: 80, h: 80 }
+      return { id, t0, t1: t0 + DUR, from: r, to: { ...r, x: r.x + TRAVEL } }
+    })
+    return { viewport: vp, events: ev }
+  }
+  window.__start = () => { document.body.classList.add('go') }
+</script>

@@ -1,0 +1,213 @@
+{
+ "entry": "Corner iOS (corner-flow-2)",
+ "surface": "ios",
+ "acquisition": "mobbin-video",
+ "clipKind": "in-app",
+ "craft": {},
+ "moments": [
+  {
+   "entry": "corner-flow-2",
+   "momentType": "transition",
+   "durationMs": 750,
+   "coverage": 0.794,
+   "travelFraction": 0.289,
+   "participants": 1,
+   "choreographyDepth": 1,
+   "provenance": {
+    "durationMs": "derived",
+    "coverage": "derived",
+    "travel": "derived",
+    "participants": "derived",
+    "choreographyDepth": "derived",
+    "momentType": "operator-from-contact-sheet"
+   }
+  },
+  {
+   "entry": "corner-flow-2",
+   "momentType": "reveal",
+   "durationMs": 267,
+   "coverage": 0.023,
+   "travelFraction": 0.006,
+   "participants": 10,
+   "choreographyDepth": 1,
+   "provenance": {
+    "durationMs": "derived",
+    "coverage": "derived",
+    "travel": "derived",
+    "participants": "derived",
+    "choreographyDepth": "derived",
+    "momentType": "operator-from-contact-sheet"
+   }
+  },
+  {
+   "entry": "corner-flow-2",
+   "momentType": "reveal",
+   "durationMs": 567,
+   "coverage": 0.527,
+   "travelFraction": 0.057,
+   "participants": 10,
+   "choreographyDepth": 2,
+   "provenance": {
+    "durationMs": "derived",
+    "coverage": "derived",
+    "travel": "derived",
+    "participants": "derived",
+    "choreographyDepth": "derived",
+    "momentType": "operator-from-contact-sheet"
+   }
+  },
+  {
+   "entry": "corner-flow-2",
+   "momentType": "reveal",
+   "durationMs": 567,
+   "coverage": 0.006,
+   "travelFraction": 0.001,
+   "participants": 4,
+   "choreographyDepth": 3,
+   "provenance": {
+    "durationMs": "derived",
+    "coverage": "derived",
+    "travel": "derived",
+    "participants": "derived",
+    "choreographyDepth": "derived",
+    "momentType": "operator-from-contact-sheet"
+   }
+  },
+  {
+   "entry": "corner-flow-2",
+   "momentType": "transition",
+   "durationMs": 1017,
+   "coverage": 0.863,
+   "travelFraction": 0.039,
+   "participants": 1,
+   "choreographyDepth": 1,
+   "provenance": {
+    "durationMs": "derived",
+    "coverage": "derived",
+    "travel": "derived",
+    "participants": "derived",
+    "choreographyDepth": "derived",
+    "momentType": "operator-from-contact-sheet"
+   }
+  },
+  {
+   "entry": "corner-flow-2",
+   "momentType": "feedback",
+   "durationMs": 417,
+   "coverage": 0.007,
+   "travelFraction": 0.011,
+   "participants": 1,
+   "choreographyDepth": 1,
+   "provenance": {
+    "durationMs": "derived",
+    "coverage": "derived",
+    "travel": "derived",
+    "participants": "derived",
+    "choreographyDepth": "derived",
+    "momentType": "operator-from-contact-sheet"
+   }
+  },
+  {
+   "entry": "corner-flow-2",
+   "momentType": "transition",
+   "durationMs": 767,
+   "coverage": 0.793,
+   "travelFraction": 0.029,
+   "participants": 3,
+   "choreographyDepth": 2,
+   "provenance": {
+    "durationMs": "derived",
+    "coverage": "derived",
+    "travel": "derived",
+    "participants": "derived",
+    "choreographyDepth": "derived",
+    "momentType": "operator-from-contact-sheet"
+   }
+  },
+  {
+   "entry": "corner-flow-2",
+   "momentType": "transition",
+   "durationMs": 417,
+   "coverage": 0.51,
+   "travelFraction": 0.044,
+   "participants": 7,
+   "choreographyDepth": 1,
+   "provenance": {
+    "durationMs": "derived",
+    "coverage": "derived",
+    "travel": "derived",
+    "participants": "derived",
+    "choreographyDepth": "derived",
+    "momentType": "operator-from-contact-sheet"
+   }
+  },
+  {
+   "entry": "corner-flow-2",
+   "momentType": "feedback",
+   "durationMs": 517,
+   "coverage": 0.035,
+   "travelFraction": 0.024,
+   "participants": 25,
+   "choreographyDepth": 3,
+   "provenance": {
+    "durationMs": "derived",
+    "coverage": "derived",
+    "travel": "derived",
+    "participants": "derived",
+    "choreographyDepth": "derived",
+    "momentType": "operator-from-contact-sheet"
+   }
+  },
+  {
+   "entry": "corner-flow-2",
+   "momentType": "feedback",
+   "durationMs": 217,
+   "coverage": 0.01,
+   "travelFraction": 0.056,
+   "participants": 2,
+   "choreographyDepth": 1,
+   "provenance": {
+    "durationMs": "derived",
+    "coverage": "derived",
+    "travel": "derived",
+    "participants": "derived",
+    "choreographyDepth": "derived",
+    "momentType": "operator-from-contact-sheet"
+   }
+  },
+  {
+   "entry": "corner-flow-2",
+   "momentType": "transition",
+   "durationMs": 567,
+   "coverage": 0.889,
+   "travelFraction": 0.023,
+   "participants": 2,
+   "choreographyDepth": 1,
+   "provenance": {
+    "durationMs": "derived",
+    "coverage": "derived",
+    "travel": "derived",
+    "participants": "derived",
+    "choreographyDepth": "derived",
+    "momentType": "operator-from-contact-sheet"
+   }
+  },
+  {
+   "entry": "corner-flow-2",
+   "momentType": "transition",
+   "durationMs": 1017,
+   "coverage": 0.755,
+   "travelFraction": 0.053,
+   "participants": 3,
+   "choreographyDepth": 2,
+   "provenance": {
+    "durationMs": "derived",
+    "coverage": "derived",
+    "travel": "derived",
+    "participants": "derived",
+    "choreographyDepth": "derived",
+    "momentType": "operator-from-contact-sheet"
+   }
+  }
+ ]
+}
