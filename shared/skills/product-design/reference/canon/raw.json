@@ -1,0 +1,378 @@
+{
+  "generatedFrom": [
+    "acorns.json",
+    "airbnb.json",
+    "motion-corner-flow-1.json",
+    "motion-corner-flow-2.json",
+    "motion-corner-ios.json",
+    "motion-duolingo-1.json",
+    "motion-duolingo-2.json",
+    "motion-duolingo-3.json",
+    "motion-unidentified-vocab.json",
+    "notion.json",
+    "slack.json",
+    "spotify.json",
+    "stripe-dashboard.json",
+    "stripe.json"
+  ],
+  "craft": {
+    "typeContrast": {
+      "n": 7,
+      "min": 2,
+      "median": 2.5,
+      "max": 6.5
+    },
+    "interactivePerMegapixel": {
+      "n": 7,
+      "min": 12.7,
+      "median": 39.3,
+      "max": 151
+    },
+    "spacingStepCount": {
+      "n": 7,
+      "min": 5,
+      "median": 8,
+      "max": 10
+    },
+    "colourCount": {
+      "n": 7,
+      "min": 7,
+      "median": 11,
+      "max": 14
+    },
+    "componentReuseRatio": {
+      "n": 7,
+      "min": 0.51,
+      "median": 0.78,
+      "max": 0.95
+    }
+  },
+  "byType": {
+    "transition": {
+      "momentCount": 21,
+      "contributors": [
+        "corner-flow-2",
+        "corner-ios",
+        "duolingo-1",
+        "duolingo-2",
+        "duolingo-3",
+        "unidentified-vocab"
+      ],
+      "stats": {
+        "durationMs": {
+          "n": 21,
+          "min": 217,
+          "q1": 433,
+          "median": 550,
+          "q3": 750,
+          "max": 1650,
+          "gateable": true
+        },
+        "travelFraction": {
+          "n": 21,
+          "min": 0.01,
+          "q1": 0.04,
+          "median": 0.06,
+          "q3": 0.3,
+          "max": 0.39,
+          "gateable": true
+        },
+        "participants": {
+          "n": 21,
+          "min": 1,
+          "q1": 3,
+          "median": 7,
+          "q3": 14,
+          "max": 35,
+          "gateable": true
+        },
+        "choreographyDepth": {
+          "n": 21,
+          "min": 1,
+          "q1": 1,
+          "median": 2,
+          "q3": 2,
+          "max": 5,
+          "gateable": true
+        },
+        "coverage": {
+          "n": 21,
+          "min": 0.15,
+          "q1": 0.42,
+          "median": 0.51,
+          "q3": 0.77,
+          "max": 0.89,
+          "gateable": true
+        }
+      }
+    },
+    "feedback": {
+      "momentCount": 13,
+      "contributors": [
+        "corner-flow-2",
+        "duolingo-1",
+        "duolingo-2",
+        "duolingo-3",
+        "unidentified-vocab"
+      ],
+      "stats": {
+        "durationMs": {
+          "n": 13,
+          "min": 83,
+          "q1": 150,
+          "median": 217,
+          "q3": 300,
+          "max": 967,
+          "gateable": true
+        },
+        "travelFraction": {
+          "n": 13,
+          "min": 0,
+          "q1": 0,
+          "median": 0.01,
+          "q3": 0.06,
+          "max": 0.19,
+          "gateable": true
+        },
+        "participants": {
+          "n": 13,
+          "min": 1,
+          "q1": 2,
+          "median": 3,
+          "q3": 4,
+          "max": 25,
+          "gateable": true
+        },
+        "choreographyDepth": {
+          "n": 13,
+          "min": 1,
+          "q1": 1,
+          "median": 1,
+          "q3": 2,
+          "max": 3,
+          "gateable": true
+        },
+        "coverage": {
+          "n": 13,
+          "min": 0,
+          "q1": 0.01,
+          "median": 0.01,
+          "q3": 0.04,
+          "max": 0.42,
+          "gateable": true
+        }
+      }
+    },
+    "reward": {
+      "momentCount": 4,
+      "contributors": [
+        "duolingo-3",
+        "unidentified-vocab"
+      ],
+      "stats": {
+        "durationMs": {
+          "n": 4,
+          "min": 550,
+          "q1": 850,
+          "median": 1183.5,
+          "q3": 1429.5,
+          "max": 1467,
+          "gateable": true
+        },
+        "travelFraction": {
+          "n": 4,
+          "min": 0.01,
+          "q1": 0.03,
+          "median": 0.09,
+          "q3": 0.21,
+          "max": 0.42,
+          "gateable": true
+        },
+        "participants": {
+          "n": 4,
+          "min": 1,
+          "q1": 1,
+          "median": 2,
+          "q3": 5.5,
+          "max": 13,
+          "gateable": true
+        },
+        "choreographyDepth": {
+          "n": 4,
+          "min": 1,
+          "q1": 1,
+          "median": 1.5,
+          "q3": 2,
+          "max": 2,
+          "gateable": true
+        },
+        "coverage": {
+          "n": 4,
+          "min": 0.25,
+          "q1": 0.26,
+          "median": 0.28,
+          "q3": 0.34,
+          "max": 0.49,
+          "gateable": true
+        }
+      }
+    },
+    "reveal": {
+      "momentCount": 17,
+      "contributors": [
+        "corner-flow-2",
+        "corner-ios",
+        "duolingo-1",
+        "duolingo-2",
+        "duolingo-3"
+      ],
+      "stats": {
+        "durationMs": {
+          "n": 17,
+          "min": 150,
+          "q1": 350,
+          "median": 433,
+          "q3": 650,
+          "max": 983,
+          "gateable": true
+        },
+        "travelFraction": {
+          "n": 17,
+          "min": 0,
+          "q1": 0,
+          "median": 0.06,
+          "q3": 0.07,
+          "max": 0.48,
+          "gateable": true
+        },
+        "participants": {
+          "n": 17,
+          "min": 1,
+          "q1": 3,
+          "median": 4,
+          "q3": 10,
+          "max": 54,
+          "gateable": true
+        },
+        "choreographyDepth": {
+          "n": 17,
+          "min": 1,
+          "q1": 1,
+          "median": 1,
+          "q3": 2,
+          "max": 5,
+          "gateable": true
+        },
+        "coverage": {
+          "n": 17,
+          "min": 0.01,
+          "q1": 0.03,
+          "median": 0.11,
+          "q3": 0.18,
+          "max": 0.53,
+          "gateable": true
+        }
+      }
+    }
+  },
+  "provenance": [
+    {
+      "entry": "Acorns",
+      "surface": "desktop web",
+      "acquisition": "chrome-dom",
+      "motion": "not evidenced",
+      "annotated": []
+    },
+    {
+      "entry": "Airbnb",
+      "surface": "desktop web",
+      "acquisition": "chrome-dom",
+      "motion": "not evidenced",
+      "annotated": []
+    },
+    {
+      "entry": "Corner iOS (corner-flow-1)",
+      "surface": "ios",
+      "acquisition": "mobbin-video",
+      "motion": "not evidenced",
+      "annotated": []
+    },
+    {
+      "entry": "Corner iOS (corner-flow-2)",
+      "surface": "ios",
+      "acquisition": "mobbin-video",
+      "motion": "measured",
+      "annotated": []
+    },
+    {
+      "entry": "Corner iOS (corner-ios)",
+      "surface": "ios",
+      "acquisition": "mobbin-video",
+      "motion": "measured",
+      "annotated": []
+    },
+    {
+      "entry": "Corner iOS (duolingo-1)",
+      "surface": "ios",
+      "acquisition": "mobbin-video",
+      "motion": "measured",
+      "annotated": []
+    },
+    {
+      "entry": "Corner iOS (duolingo-2)",
+      "surface": "ios",
+      "acquisition": "mobbin-video",
+      "motion": "measured",
+      "annotated": []
+    },
+    {
+      "entry": "Corner iOS (duolingo-3)",
+      "surface": "ios",
+      "acquisition": "mobbin-video",
+      "motion": "measured",
+      "annotated": []
+    },
+    {
+      "entry": "Corner iOS (unidentified-vocab)",
+      "surface": "ios",
+      "acquisition": "mobbin-video",
+      "motion": "measured",
+      "annotated": []
+    },
+    {
+      "entry": "Notion",
+      "surface": "desktop web",
+      "acquisition": "chrome-dom",
+      "motion": "not evidenced",
+      "annotated": []
+    },
+    {
+      "entry": "Slack",
+      "surface": "desktop web",
+      "acquisition": "chrome-dom",
+      "motion": "not evidenced",
+      "annotated": []
+    },
+    {
+      "entry": "Spotify",
+      "surface": "desktop web",
+      "acquisition": "chrome-dom",
+      "motion": "not evidenced",
+      "annotated": []
+    },
+    {
+      "entry": "Stripe (dashboard)",
+      "surface": "desktop web",
+      "acquisition": "chrome-dom",
+      "motion": "not evidenced",
+      "annotated": []
+    },
+    {
+      "entry": "Stripe",
+      "surface": "desktop web",
+      "acquisition": "chrome-dom",
+      "motion": "not evidenced",
+      "annotated": []
+    }
+  ]
+}

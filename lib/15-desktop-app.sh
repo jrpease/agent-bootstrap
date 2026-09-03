@@ -19,7 +19,7 @@ log "Pointing GUI-launched Claude at the default account"
 #
 # `launchctl setenv` writes the launchd session environment, which is exactly
 # what Dock-launched apps inherit. A RunAtLoad agent re-applies it each login.
-LABEL="claude-bootstrap.config-dir"
+LABEL="agent-bootstrap.config-dir"
 PLIST="$HOME/Library/LaunchAgents/$LABEL.plist"
 
 # Single source of truth: whatever the accounts step wrote. No second copy of the account

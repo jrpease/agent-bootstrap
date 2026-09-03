@@ -1,4 +1,6 @@
-raw.json
+# raw.json is NOT ignored: it is derived from entries/ but consumed by
+# amplitude-gate.mjs, so a checkout without it breaks the skill.
+# Regenerate with: node aggregate.mjs entries/
 shots/
 sheets/
 node_modules

@@ -3,9 +3,11 @@
 export PATH="$HOME/.local/bin:$HOME/bin:$PATH"
 
 # Machine-specific env vars (API keys, extra PATH entries, etc.) — not committed.
-# Phase 10 also writes per-account Claude aliases (claude-<name>) into this file,
+# The accounts step also writes per-account Claude aliases (claude-<name>) into this file,
 # since account names are personal and device-specific.
 [[ -f "$HOME/.zshrc.local" ]] && source "$HOME/.zshrc.local"
 
-# fnm — node version manager (auto-switches on .node-version/.nvmrc)
-eval "$(fnm env --use-on-cd --shell zsh)"
+# fnm — node version manager (auto-switches on .node-version/.nvmrc).
+# Optional: setup.sh installs Node via Homebrew, not fnm, so guard on it being
+# present rather than erroring in every new shell.
+command -v fnm >/dev/null && eval "$(fnm env --use-on-cd --shell zsh)"

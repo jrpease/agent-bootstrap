@@ -14,7 +14,7 @@ export LPASS_AGENT_TIMEOUT=0
 # non-interactive shell — has no TTY, so the read fails immediately and lpass reports
 # "Failed to enter correct password", which looks like a wrong password and is not one.
 # pinentry-mac gives it a native GUI prompt instead, which needs no TTY. Installed by
-# phase 00; resolved here rather than hardcoded, since Intel Macs use /usr/local.
+# the deps step; resolved here rather than hardcoded, since Intel Macs use /usr/local.
 _pinentry_mac="$(command -v pinentry-mac 2>/dev/null)"
 [[ -n "$_pinentry_mac" ]] && export LPASS_PINENTRY="$_pinentry_mac"
 unset _pinentry_mac

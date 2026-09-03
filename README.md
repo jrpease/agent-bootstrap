@@ -36,7 +36,7 @@ products — type contrast, spacing steps, component reuse ratios — so "make i
 good" has numbers behind it.
 
 **`lib/`** — eleven ordered, idempotent setup steps, each one a file. Re-running
-is safe; every write into `$HOME` is marker-guarded or backed up first.
+is safe. Read "Before you run it" below before the first run.
 
 ## How the projection works
 
@@ -68,7 +68,7 @@ would ship as literal text.
 
 | Step | Purpose |
 |------|---------|
-| `deps` | Homebrew, Oh My Zsh, Node, Claude CLI, Codex CLI, gh |
+| `deps` | Homebrew, Oh My Zsh, Node, Claude CLI, Codex CLI, gh, lastpass-cli, ffmpeg |
 | `accounts` | Named Claude accounts and Codex homes, aliases, the default |
 | `desktop-app` | Point the Dock-launched Claude app at the default account |
 | `config` | Generate `CLAUDE.md`, per-account `settings.json`, Codex `AGENTS.md` and roles |
@@ -85,20 +85,33 @@ terminal — so a bare `./setup.sh` fails inside an agent session, on purpose.
 
 ## Before you run it
 
-This provisions a machine. It installs Homebrew and global npm packages, appends
-managed blocks to `~/.zshrc` and `~/.zprofile`, and symlinks config into
-`~/.claude*/`. Every write is guarded — existing real files are backed up to
-`.bak`, appends are marker-based and idempotent, and the one destructive step
-(pruning stale skill mirrors) prompts first. Nothing is deleted without a
-confirm. Still: read `lib/` first. It's ~1,300 lines, and it is touching your `$HOME`.
+This provisions a machine. It installs Homebrew, `lastpass-cli`, `pinentry-mac`,
+`ffmpeg`, `tomlkit` and global npm packages, appends managed blocks to `~/.zshrc`
+and `~/.zprofile`, and symlinks config into `~/.claude*/`. Appends are
+marker-based and idempotent, and existing real files are backed up to `.bak`
+before being replaced.
+
+**Read this part if you already use Claude Code.** `config` *generates*
+`~/.claude*/settings.json` rather than merging into it. Only `autoMode` carries
+over from your existing file — your `hooks`, `env`, `model`, and your own
+`permissions.allow` are replaced by mine. The original is copied to
+`settings.json.bak` first, once, so nothing is lost, but the live file becomes
+my config and not yours. Diff the two afterward and merge back what you want.
+Two other steps also delete without prompting: `skills` prunes stale mirror
+symlinks, and `memory` moves memory files between accounts.
+
+Read `lib/` first. It's ~1,300 lines, and it is touching your `$HOME`.
 
 Run one step at a time if you'd rather. `./setup.sh config` alone gets you the
-instruction/skill projection without any of the account or dependency machinery,
-and that is the part most people actually want.
+instruction/skill projection, and that is the part most people actually want.
+One caveat: if `~/.codex` already exists, `config` also does the Codex half,
+which needs `tomlkit` — install it (`pip install tomlkit`) or run `deps` first.
+With no `~/.codex`, it warns and skips. `verify` needs Python 3.11+ for
+`tomllib`; Apple's system `python3` is 3.9, so use Homebrew's.
 
 **`claude/settings.json` ships `"defaultMode": "auto"`** — Claude runs tools
 without prompting you first. I want that; you may not. There is a deny-list
-alongside it (`.env`, `secrets/**`, `*.pem`, `~/.zshrc.local`), but a deny-list
+alongside it (`.env`, `secrets/**`, `*.pem`, `~/.ssh`, `~/.aws`, gh config), but a deny-list
 is a floor, not a seatbelt. Change it to `"default"` before the `config` step if
 you'd rather approve things yourself.
 
@@ -127,9 +140,10 @@ exactly the thing you cannot borrow — write your own, or delete the section.
 
 This is a subset of a private repo. Left out: the voice skill, per-account
 overlays naming real clients, and about 120,000 words of working notes that were
-written to be read by me and no one else. Nothing load-bearing is missing —
-`./setup.sh` runs end to end — but if a reference looks like it points somewhere
-that doesn't exist, that's why. Open an issue and I'll fix it.
+written to be read by me and no one else. Nothing load-bearing is missing, and
+every step dry-runs clean, but I have not provisioned a fresh Mac from this
+exact tree end to end — if a reference points somewhere that doesn't exist, that
+is why. Open an issue and I'll fix it.
 
 ## License
 

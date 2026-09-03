@@ -24,7 +24,7 @@ fi
 # so without this the default account would silently miss CLAUDE.md + settings.
 mkdir -p "$HOME/.claude"
 
-# account_name DIR — ".claude" -> "default", ".claude-sweet" -> "sweet".
+# account_name DIR — ".claude" -> "default", ".claude-work" -> "work".
 # Must stay in lockstep with the same derivation in tools/fleet-health.sh.
 account_name() {
   local n; n="$(basename "$1")"; n="${n#.claude}"; n="${n#-}"; echo "${n:-default}"
@@ -36,14 +36,14 @@ account_name() {
 #
 # A real file, not a symlink: harness runtime writes (/model toggles, auto mode's
 # per-project trust profiles) stay in the account instead of smearing into the
-# repo and every other account — the #40 Shopify-profile incident. But not
+# repo and every other account. But not
 # seed-once either: base edits propagate on every phase-20 run, and regeneration
 # is lossless because runtime keys carry over. settings-merge.py output is
 # byte-stable, so tools/fleet-health.sh can diff an account file against a
 # re-merge to detect drift exactly.
 #
 # There is no claude/settings.local.json: Claude Code does not read a user-scope
-# settings.local.json (verified by canary in #39); shared config belongs in
+# settings.local.json (verified by canary); shared config belongs in
 # claude/settings.json, per-account config in claude/accounts/.
 while IFS= read -r dir; do
   info "account: $dir"
@@ -59,6 +59,16 @@ while IFS= read -r dir; do
     rm "$dir/settings.json.new"
     skip "settings.json current (base${overlay_args:+ + $name overlay} + runtime)"
   else
+    # Back up ONCE, same reasoning as AGENTS.md below: this file is regenerated
+    # every run, so an unconditional backup would bury the real original under a
+    # previous generation of our own output. Only RUNTIME_KEYS carry over from an
+    # existing file, so anything else already there — hooks, env, a personal
+    # permissions.allow — is replaced, not merged. On a machine that was already
+    # using Claude Code, that is the user's own config being overwritten.
+    if [[ -f "$dir/settings.json" && ! -L "$dir/settings.json" && ! -f "$dir/settings.json.bak" ]]; then
+      cp "$dir/settings.json" "$dir/settings.json.bak"
+      warn "backed up pre-existing settings.json -> settings.json.bak (only autoMode carries over)"
+    fi
     rm -f "$dir/settings.json"
     mv "$dir/settings.json.new" "$dir/settings.json"
     ok "generated $dir/settings.json (base${overlay_args:+ + $name overlay} + runtime)"

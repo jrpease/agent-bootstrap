@@ -24,7 +24,7 @@ if [[ -n "$brew_bin" ]]; then
   eval "$("$brew_bin" shellenv)"
   zprofile="$HOME/.zprofile"
   if [[ ! -f "$zprofile" ]] || ! grep -qF "$brew_bin shellenv" "$zprofile"; then
-    printf '\n# Homebrew (added by claude-bootstrap)\neval "$(%s shellenv)"\n' "$brew_bin" >> "$zprofile"
+    printf '\n# Homebrew (added by agent-bootstrap)\neval "$(%s shellenv)"\n' "$brew_bin" >> "$zprofile"
     ok "wired Homebrew into ~/.zprofile"
   fi
 fi

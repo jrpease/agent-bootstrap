@@ -1,6 +1,6 @@
 # Agent roster
 
-Three agents, carved by **work type** rather than model tier, so the call at the
+Four agents, carved by **work type** rather than model tier, so the call at the
 point of work is "what kind of task is this" — not "which model does this
 deserve." The model is an implementation detail baked into each definition.
 

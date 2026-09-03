@@ -18,8 +18,8 @@ fi
 # so nothing else does this — without it, ~/.zshrc.local is never sourced and
 # the account aliases silently don't exist. Idempotent via marker guard.
 zshrc="$HOME/.zshrc"
-mark_start="# >>> claude-bootstrap zshrc >>>"
-mark_end="# <<< claude-bootstrap zshrc <<<"
+mark_start="# >>> agent-bootstrap zshrc >>>"
+mark_end="# <<< agent-bootstrap zshrc <<<"
 [[ -f "$zshrc" ]] || touch "$zshrc"
 # If ~/.zshrc IS the repo zshrc (symlinked by an older setup), the config is
 # already loaded and there is nothing to wire. Without this guard the append

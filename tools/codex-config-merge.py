@@ -18,7 +18,7 @@ compose — within a layer default_permissions wins, across layers the last laye
 wins — so writing both makes the winner depend on config layer ordering.
 
   python3 tools/codex-config-merge.py --config ~/.codex/config.toml \
-      --servers shared/mcp/servers.json --profile jordan
+      --servers shared/mcp/servers.json --profile bootstrap
 """
 import argparse
 import json
@@ -70,7 +70,7 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--config", required=True)
     ap.add_argument("--servers")
-    ap.add_argument("--profile", default="jordan")
+    ap.add_argument("--profile", default="bootstrap")
     ap.add_argument("--approval-policy", default="on-request",
                     choices=["untrusted", "on-request", "never"])
     ap.add_argument("--model", default="gpt-5.5")

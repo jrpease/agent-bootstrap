@@ -12,14 +12,14 @@ servers_json="$DOTFILES/shared/mcp/servers.json"
 while IFS= read -r dir; do
   name_label="${dir##*/}"
   info "account: $name_label"
-  # Short account name for per-server scoping below: ".claude-sweet" -> "sweet",
+  # Short account name for per-server scoping below: ".claude-work" -> "work",
   # and the unsuffixed default dir ".claude" -> "default".
   acct="${name_label#.claude}"; acct="${acct#-}"; [[ -z "$acct" ]] && acct="default"
   existing="$(CLAUDE_CONFIG_DIR="$dir" claude mcp list 2>/dev/null || true)"
   while IFS=$'\t' read -r name type rest accounts; do
     [[ -z "$name" ]] && continue
     # A server may list "accounts" in servers.json to limit itself to specific
-    # accounts (shopify is only wanted on sweet). "*" means every account.
+    # accounts (shopify is only wanted on work). "*" means every account.
     if [[ "$accounts" != "*" && ",$accounts," != *",$acct,"* ]]; then
       skip "mcp $name not scoped to $acct"; continue
     fi

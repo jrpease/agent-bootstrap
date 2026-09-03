@@ -135,7 +135,7 @@ expands into twenty edits is the case it exists for. If writing the brief is
 most of the work, do it inline.
 
 The routing rules and model rationale live in `shared/agents/README.md` in
-your claude-bootstrap checkout.
+your agent-bootstrap checkout.
 
 ## Configuration hygiene
 

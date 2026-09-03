@@ -6,7 +6,11 @@
       "Read(**/.env.*)",
       "Read(**/secrets/**)",
       "Read(**/*.pem)",
-      "Read(~/.zshrc.local)"
+      "Read(~/.zshrc.local)",
+      "Read(~/.ssh/**)",
+      "Read(~/.aws/**)",
+      "Read(~/.config/gh/**)",
+      "Read(**/id_rsa*)"
     ],
     "allow": [
       "Bash(claude plugin:*)",
