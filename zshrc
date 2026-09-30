@@ -7,7 +7,9 @@ export PATH="$HOME/.local/bin:$HOME/bin:$PATH"
 # since account names are personal and device-specific.
 [[ -f "$HOME/.zshrc.local" ]] && source "$HOME/.zshrc.local"
 
-# fnm — node version manager (auto-switches on .node-version/.nvmrc).
-# Optional: setup.sh installs Node via Homebrew, not fnm, so guard on it being
-# present rather than erroring in every new shell.
-command -v fnm >/dev/null && eval "$(fnm env --use-on-cd --shell zsh)"
+# fnm — node version manager (auto-switches on .node-version/.nvmrc). The deps
+# step installs it, but this file is shared across devices and sourced before
+# setup has ever run on a new one, so guard rather than erroring in every shell.
+# `if`, not `&&`: as the file's last line a failed test would leave $? at 1 and
+# the prompt theme would open every shell showing an error.
+if command -v fnm >/dev/null; then eval "$(fnm env --use-on-cd --shell zsh)"; fi

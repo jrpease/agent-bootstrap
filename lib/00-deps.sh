@@ -41,6 +41,12 @@ fi
 if have_cmd node; then ok "Node present ($(node --version))"
 else log "Installing Node"; brew install node; fi
 
+# fnm — per-project Node versions, activated by zshrc. `fnm env` always prepends
+# a shim dir; with no fnm default set it dangles, so brew's node above is the
+# first node that resolves. Once `fnm default` is set, fnm's node and npm win.
+if have_cmd fnm; then ok "fnm present"
+else log "Installing fnm"; brew install fnm; fi
+
 # ffmpeg (studio-gen video frame extraction)
 if have_cmd ffmpeg; then ok "ffmpeg present"
 else log "Installing ffmpeg"; brew install ffmpeg; fi
@@ -55,9 +61,31 @@ else log "Installing lastpass-cli"; brew install lastpass-cli; fi
 if have_cmd pinentry-mac; then ok "pinentry-mac present"
 else log "Installing pinentry-mac"; brew install pinentry-mac; fi
 
-# Claude CLI
-if have_cmd claude; then ok "Claude CLI present ($(claude --version))"
-else log "Installing Claude CLI"; npm install -g @anthropic-ai/claude-code; fi
+# Claude CLI — the native installer, not `npm install -g`. It lands a
+# self-contained binary in ~/.local/bin that no Node version can orphan. An npm
+# global install lives under whichever node was active; once fnm's default takes
+# over, npm has no record of it, updates write a second copy that wins on PATH,
+# and `have_cmd claude` keeps passing — how codex went ENOENT for four months.
+#
+# The test is for the NATIVE binary, not `have_cmd claude`: a machine the old
+# step provisioned has an npm `claude` that passes have_cmd forever, so the
+# install would never run there. ~/.local/bin is ahead of brew on PATH
+# (common.sh, zshrc), so once installed the native binary wins; the npm copy is
+# then removed so an update can't write a second one.
+native_claude="$HOME/.local/bin/claude"
+if [[ -x "$native_claude" ]]; then
+  ok "Claude CLI present, native ($("$native_claude" --version 2>/dev/null || echo 'BROKEN — reinstall: curl -fsSL https://claude.ai/install.sh | bash'))"
+else
+  log "Installing Claude CLI (native)"; curl -fsSL https://claude.ai/install.sh | bash
+fi
+if [[ -x "$native_claude" ]] && have_cmd npm && npm ls -g @anthropic-ai/claude-code --depth=0 >/dev/null 2>&1; then
+  log "Removing the npm-installed Claude CLI (the native one now wins on PATH)"
+  npm uninstall -g @anthropic-ai/claude-code
+elif [[ -e /opt/homebrew/lib/node_modules/@anthropic-ai/claude-code ]]; then
+  warn "orphaned npm Claude CLI at /opt/homebrew/lib/node_modules/@anthropic-ai/claude-code"
+  info "npm does not track it (installed under a different node). Move it aside:"
+  info "  mv /opt/homebrew/lib/node_modules/@anthropic-ai/claude-code ~/  &&  rm -f /opt/homebrew/bin/claude"
+fi
 
 # GitHub CLI
 if have_cmd gh; then ok "GitHub CLI present"

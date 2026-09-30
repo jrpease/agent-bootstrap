@@ -4,7 +4,7 @@ source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/lib/common.sh"
 
 log "Verification summary"
 
-for c in brew node claude codex gh git ffmpeg studio-gen; do
+for c in brew node fnm claude codex gh git ffmpeg studio-gen; do
   if have_cmd "$c"; then ok "$c present"; else err "$c MISSING"; fi
 done
 

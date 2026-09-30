@@ -26,6 +26,7 @@
     "figma@claude-plugins-official": true,
     "vercel@claude-plugins-official": true,
     "frontend-design@claude-plugins-official": false,
+    "shopify-ai-toolkit@claude-plugins-official": false,
     "throughline@throughline-marketplace": true,
     "brainforge@brainforge": true,
     "synapse@brainforge": true

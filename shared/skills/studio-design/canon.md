@@ -9,10 +9,23 @@ Sourced by `reference/canon/` from eight Awwwards category archives, decomposed 
 page at 1440×900 and measuring it. Captured 2026-08-18. Every number below is measured, not
 recalled. Entries record **moves, not URLs** — a redesign does not void the knowledge.
 
+**Entry 58 was hand-picked, not swept** (2026-09-04, from Muzli). Same 1440×900 decomposition, so
+its numbers are comparable; it simply did not come through `sweep.py`. Hand-picked additions are
+fine — say so in the entry's provenance, and measure at the same viewport or the numbers mean
+nothing.
+
 **What these entries are and are not.** Each was read from five scroll-depth frames plus a DOM
 measurement pass. Composition, type, colour, and material are observed. Technique is measured.
 **Motion choreography was not watched** — where an entry implies scroll behaviour, it is inferred
 from sticky counts, library presence, and clip/mask usage, and is marked *inferred*.
+
+**Entry 58 has a fold frame only.** It stacks its sections and scrubs a GSAP timeline, so nothing
+seeks it — not `window.scrollTo`, not its scroll library, not real wheel events. (Clicking the
+page and then pressing PageDown does advance it — found 2026-09-30, after this entry was written.)
+`capture.mjs` now detects exactly this and refuses to write a duplicate fold in place of a
+mid frame (see `reference/canon/README.md`). Entry 58's composition below the fold is read from the
+DOM — section heights and text — not from pixels. Treat its mid-page observations as weaker
+evidence than the others'.
 
 ---
 
@@ -89,6 +102,7 @@ difference` for type over imagery; 28 grid contexts and a custom scrollbar.
 **Measured:** 15–115px (7.7×) · easing `0.23,1,0.32,1` · nav `static` · 2 canvas.
 **Why it wins:** the identity is drawn, not chosen.
 **Cost to beat:** you must make a typeface behave, not pick one.
+*Re-shot 2026-09-30: the 45% frame is a big serif statement over studio video — the page holds.*
 
 ### 09 · Beaucoup. — beaucoup.studio — Beaucoup. — studio
 **What it is:** Work index held inside a perforated frame that *is* the layout.
@@ -109,13 +123,16 @@ position, rule, and space; 66 inline SVGs; no scroll library.
 craft exemplar and it fails the type-contrast dimension by construction.
 
 ### 36 · noth.in — Thomas Carré — editorial
-**What it is:** Near-empty white with a single dark morphing object.
+**What it is:** Near-empty black with a single chrome morphing object.
 **Moves:** one subject per screen and nothing else; PP Neue Montreal with IBM Plex Mono as a
 genuine third voice; `mix-blend-mode: difference`; 10 clip-paths; fixed nav over a held void.
 **Measured:** 10.8–72px (6.7×) · 12.9 viewports tall · GSAP + Lenis.
 **Why it wins:** it holds emptiness long enough to become a subject.
 **Cost to beat:** nerve. The ink-per-screen floor forbids this; the floor is wrong here, which is
 what an override with a reason is for.
+*Re-shot 2026-09-30: the body is white in the DOM, but what renders is black. Below the fold it
+keeps one subject per screen — a full-bleed video, a lone work tile — and closes on an SVG
+wordmark, which is why the measured range stops at 72px.*
 
 ### 38 · House of Honey — houseofhoney.com — Edoardo Lunardi — editorial
 **What it is:** Interiors studio as a magazine masthead over a room grid.
@@ -134,7 +151,9 @@ top-right quadrant; a staggered image grid entering from the bottom edge at vari
 **Measured:** 10.8–207px (19.2×) · easing `0.33,1,0.68,1` at 0.6s · GSAP + Lenis.
 **Why it wins:** the void is composed, not left over.
 **Cost to beat:** asymmetry you can defend — one loaded corner, one empty one.
-*Note: ignores `window.scrollTo`; capture with wheel events.*
+*Note: `capture.mjs` cannot seek it — click the page, then PageDown. Re-shot 2026-09-30: below
+the fold the image grid becomes a dense photographic masonry and the page closes on an oversized
+serif wordmark. It does not go slack.*
 
 ### 42 · Truck'N Roll — trucknroll.com — Locomotive — editorial
 **What it is:** Tour logistics, sold as a rock poster.
@@ -209,6 +228,30 @@ canvas-driven; the house faces carried over from locomotive.ca.
 **Cost to beat:** low. Included as the honest bottom of the B2B band — it uses a named tell face
 and the narrowest scale of any keeper. Aim above it, not at it.
 
+### 58 · Heron AI — heronaiapp.com — Bearplus — B2B *(art-direction reference)*
+**What it is:** A building-code compliance agent for architects, staged as an architect's own
+drawing sheet.
+**Moves:** **the product's output is the decorative system** — real code citations (`IBC 1015.3
+GUARDRAIL REQUIRED`, `IBC 1011.11 HANDRAILS REQUIRED`, `ICC A117.1 §604.3.1`) set in mono as
+sheet marginalia, with the single accent `rgb(250,54,0)` reserved for the violation flag and used
+for nothing else; drafting chrome of ruled tick margins and corner registration crosses; a bespoke
+stippled elevation as the hero, made **draggable so the demo is the illustration** — "click and
+drag to see violations", with a live X/Y readout; one 9,023px pinned map sequence carrying **73%
+of the page's scroll**; BT Grotesk against GeistMono as a genuine second voice; negative tracking
+throughout, leading 1.3.
+**Measured:** 8.3–46.7px (**5.6×**, 9 sizes) · easing `0.23,1,0.32,1` at 0.4s · nav `fixed` ·
+`multiply` ×33 · 87 clip-paths, 31 masks, 143 SVG, 25 keyframes · 13.7 viewports ·
+Webflow + GSAP/ScrollTrigger/SplitText + Lenis + Barba.
+**Why it wins:** it argues in the client's own notation, and the hero is the product running
+rather than a picture of it.
+**Cost to beat:** a domain notation worth borrowing, and the nerve to make the hero interactive
+instead of decorative.
+**Use narrowly.** Art direction and concept only. At **5.6×** it sits below every keeper except
+Louis Paquet and just above BotBlox — hierarchy is carried by material, rule and mono/grotesk
+voice, not size. Do not cite it for type. It also ships the two chrome defaults this canon usually
+refuses: a fixed nav and no custom scrollbar. Proof that a **Webflow** build reaches Tier A art
+direction — the ceiling here is concept, not stack.
+
 ### 57 · Pear — pear.no — corporate
 **What it is:** A partnership firm arguing its thesis with a gilded pear among classical statuary.
 **Moves:** **deadpan absurdity executed straight** — the image is wrong on purpose and exact about
@@ -228,6 +271,9 @@ tracking; warm paper `rgb(252,247,240)` with an electric blue `rgb(52,81,245)`;
 **Measured:** 14–172.8px (12.3×) · easing `0.7,0,0.3,1` at 0.5s · 4 canvas.
 **Why it wins:** the annotation layer is a third type role with a job, not a flourish.
 **Cost to beat:** details actually worth pointing at.
+*Note: `capture.mjs` cannot seek it — click the page, then PageDown. Re-shot 2026-09-30: below
+the fold the annotation carries on as labelled callouts on founder portraits (company, exit), and
+the page ends on a blue footer of loose, playable letters.*
 
 ### 39 · Gucci La Famiglia — lafamigliamysteryunfolds.gucci.com — MONOGRID — cinematic
 **What it is:** A luxury narrative staged in a lit 3D villa at night.

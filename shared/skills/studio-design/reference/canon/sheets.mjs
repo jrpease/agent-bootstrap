@@ -1,5 +1,5 @@
 // sheets.mjs — build labelled contact sheets from shots.json for ratification.
-import { chromium } from 'playwright';
+import { chromium } from 'playwright-core';
 import fs from 'node:fs';
 import path from 'node:path';
 
@@ -24,12 +24,14 @@ h1{font-size:20px;margin-bottom:4px;font-weight:600}
 .n span{font-weight:400;font-size:11px;opacity:.85}
 img{width:100%;display:block;background:#000;height:236px;object-fit:cover;object-position:top}
 img+img{border-top:2px solid #e8523f}
+.nomid{height:236px;border-top:2px solid #e8523f;background:#1a1a1a;color:#e8523f;
+  font-size:11px;line-height:1.5;display:flex;align-items:center;justify-content:center;text-align:center}
 .meta{padding:7px 9px}
 .meta b{display:block;font-size:13px}
 .meta code{color:#7fb3ff;font-size:10.5px;word-break:break-all}
 `;
 
-const browser = await chromium.launch();
+const browser = await chromium.launch({ channel: 'chrome' });   // the installed Chrome — no browser download
 const page = await browser.newPage({ viewport: { width: 1680, height: 1200 }, deviceScaleFactor: 1 });
 let made = [];
 
@@ -40,7 +42,8 @@ for (const [cat, list] of Object.entries(groups)) {
       <div class="tile">
         <div class="n">#${String(s.i).padStart(2,'0')}<span>${s.kind === 'own' ? 'STUDIO SITE' : 'PROJECT'}</span></div>
         <img src="shots/${s.fold}">
-        ${s.mid ? `<img src="shots/${s.mid}">` : ''}
+        ${s.mid ? `<img src="shots/${s.mid}">`
+          : s.midMoved === false ? `<div class="nomid">no 45% frame — virtual scroll<br>shoot by hand before ratifying</div>` : ''}
         <div class="meta"><b>${s.studio || '—'}</b><code>${s.url.replace(/^https?:\/\//,'')}</code></div>
       </div>`).join('');
     const total = Math.ceil(list.length / PER);

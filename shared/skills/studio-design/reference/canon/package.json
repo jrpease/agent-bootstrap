@@ -1,0 +1,9 @@
+{
+  "name": "canon-pipeline",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=20" },
+  "dependencies": {
+    "playwright-core": "^1.63.0"
+  }
+}

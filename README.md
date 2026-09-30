@@ -28,7 +28,7 @@ which one gets the work. The rule that made them useful: dispatch on tedium, not
 on difficulty. If describing the change costs less than making it, delegate.
 
 **`shared/skills/`** — the design skills are the deep end.
-`studio-design` (17k words) and `product-design` (10k) are methodology, not tips:
+`studio-design` (18k words) and `product-design` (14k) are methodology, not tips:
 build three heroes and kill two, judge the result against named real-world work
 rather than your own brief, and prove the thing runs before calling it done.
 `product-design/reference/canon/` holds measurements harvested from real
@@ -100,7 +100,7 @@ my config and not yours. Diff the two afterward and merge back what you want.
 Two other steps also delete without prompting: `skills` prunes stale mirror
 symlinks, and `memory` moves memory files between accounts.
 
-Read `lib/` first. It's ~1,300 lines, and it is touching your `$HOME`.
+Read `lib/` first. It's ~1,400 lines, and it is touching your `$HOME`.
 
 Run one step at a time if you'd rather. `./setup.sh config` alone gets you the
 instruction/skill projection, and that is the part most people actually want.
@@ -139,7 +139,7 @@ exactly the thing you cannot borrow — write your own, or delete the section.
 ## What's not here
 
 This is a subset of a private repo. Left out: the voice skill, per-account
-overlays naming real clients, and about 120,000 words of working notes that were
+overlays naming real clients, and about 130,000 words of working notes that were
 written to be read by me and no one else. Nothing load-bearing is missing, and
 every step dry-runs clean, but I have not provisioned a fresh Mac from this
 exact tree end to end — if a reference points somewhere that doesn't exist, that

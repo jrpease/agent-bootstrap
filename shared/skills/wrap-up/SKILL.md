@@ -55,6 +55,8 @@ git status --porcelain                    # clean?
 
 # Establish the base FIRST — the integrated/not rows are all relative to it.
 base="$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@')"
+[ -n "$base" ] || base="$(gh repo view --json defaultBranchRef --jq .defaultBranchRef.name 2>/dev/null)"
+echo "base=[$base]"                       # empty = unresolved; the log below then prints nothing, which is NOT "integrated"
 git log --oneline "$base"..HEAD          # commits ahead of base
 
 git rev-parse --abbrev-ref @{u} 2>/dev/null   # upstream, or empty = never pushed
@@ -69,7 +71,7 @@ Check detached HEAD first — it short-circuits the other rows.
 |-------|--------|--------|
 | Detached HEAD | `git rev-parse --abbrev-ref HEAD` returns `HEAD` | There is no branch to finish. Report the state and ask how to proceed — never invoke `finish-branch` from detached HEAD. |
 | Already integrated | `git log "$base"..HEAD` is empty — every commit on this branch is already in the base — and no open PR. Being on the base branch with the feature branch gone is the same signal (the diff against yourself is empty) | Report it and skip to step 4 |
-| Already integrated (squash) | `git log "$base"..HEAD` is **non**-empty but `gh pr list --state merged` shows a merged PR — squash and rebase merges rewrite the commits, so the branch's own commits are never ancestors of the base | Report it and skip to step 4 |
+| Already integrated (squash) | `git log "$base"..HEAD` is **non**-empty but `gh pr list --state merged` shows a merged PR, and no open PR — squash and rebase merges rewrite the commits, so the branch's own commits are never ancestors of the base | Report it and skip to step 4 |
 | PR open | `gh pr list --state open` shows an open PR | Skip integration; **mark that branch protected for step 4** |
 | Not integrated | On a named branch, `git log "$base"..HEAD` is non-empty, no open PR, no merged PR | Invoke `finish-branch` and follow it |
 
@@ -82,7 +84,8 @@ means pushed and current, and those two states are indistinguishable if you
 only run the log.
 
 The base branch comes from `git symbolic-ref refs/remotes/origin/HEAD` (fall
-back to `gh repo view --json defaultBranchRef` if that resolves nothing). If
+back to `gh repo view --json defaultBranchRef --jq .defaultBranchRef.name` if that
+resolves nothing — without `--jq` it prints JSON, not a branch name). If
 neither resolves, step 4 asks rather than guessing. If `$base` is empty or
 `git log "$base"..HEAD` *errors* (no such ref — a clone that never fetched the
 base locally), the base is unresolved: say so and ask. An error is not

@@ -6,6 +6,11 @@ set -euo pipefail
 DOTFILES="${DOTFILES:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 export DOTFILES
 
+# The native Claude installer lands in ~/.local/bin, which a fresh machine's
+# login shell may not have on PATH yet. Every step runs in its own bash process
+# and later ones call `claude`, so put it on PATH here, once, for all of them.
+[[ ":$PATH:" == *":$HOME/.local/bin:"* ]] || export PATH="$HOME/.local/bin:$PATH"
+
 if [[ -t 1 ]]; then
   _C_RESET=$'\033[0m'; _C_BLUE=$'\033[34m'; _C_GREEN=$'\033[32m'
   _C_YELLOW=$'\033[33m'; _C_RED=$'\033[31m'; _C_DIM=$'\033[2m'

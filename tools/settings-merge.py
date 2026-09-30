@@ -6,15 +6,26 @@ Usage: settings-merge.py <base.json> [--overlay F] [--runtime F]
 
 Dicts merge recursively with the overlay winning; every other type is replaced
 outright. RUNTIME_KEYS are account-owned state the harness writes (auto mode's
-per-project trust profiles) — they carry over from --runtime verbatim, so
-regenerating an account file is always lossless. Output is stable (indent=2),
-so callers can byte-compare a file against a re-merge to detect drift.
+per-project trust profiles) — they carry over from --runtime verbatim.
+
+ADDITIVE_KEYS are shared between the repo and the app: `/plugin` writes into
+the same maps the repo declares. Entries only the account has carry over;
+entries the repo also declares take the repo's value. So a plugin switched on
+in-app survives regeneration, and removing one deliberately means setting
+it to false in base or overlay — deleting the line no longer removes it from
+accounts that have it. tools/fleet-health.sh reports account-only entries so
+they get folded into the repo rather than accumulating unseen.
+
+Everything else in --runtime is replaced. Callers compare an account file to a
+re-merge by content (tools/json-same.py), since the Claude CLI rewrites these
+files in its own key order and escaping.
 """
 import json
 import os
 import sys
 
 RUNTIME_KEYS = ("autoMode",)
+ADDITIVE_KEYS = ("enabledPlugins", "extraKnownMarketplaces")
 
 
 def merge(base, overlay):
@@ -40,4 +51,9 @@ while args:
         for key in RUNTIME_KEYS:
             if key in existing:
                 result[key] = existing[key]
+        for key in ADDITIVE_KEYS:
+            if isinstance(existing.get(key), dict):
+                target = result.setdefault(key, {})
+                for name, value in existing[key].items():
+                    target.setdefault(name, value)
 print(json.dumps(result, indent=2))

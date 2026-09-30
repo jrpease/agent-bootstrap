@@ -121,7 +121,7 @@ export function accountOrThrow(opts = {}) {
       'no account could be determined, so no key was chosen.',
       `Pin this project:  studio-gen account <name>   (writes ./${PIN_FILE})`,
       'Or for one command: STUDIO_GEN_ACCOUNT=<name> studio-gen …',
-      'Accounts are the names of your claude-<name> aliases, e.g. personal, work, client.',
+      'Accounts are the names of your claude-<name> aliases, e.g. personal, work, acme.',
     ].join('\n'),
   )
 }

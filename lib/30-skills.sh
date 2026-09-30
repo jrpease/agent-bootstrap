@@ -36,6 +36,7 @@ link_asset() {
 }
 
 # --- Marketplaces + plugins -> ensure per account config dir ---
+plugins_installed=0
 while IFS= read -r dir; do
   info "account: $dir"
   existing_markets="$(CLAUDE_CONFIG_DIR="$dir" claude plugin marketplace list 2>/dev/null || true)"
@@ -56,7 +57,8 @@ while IFS= read -r dir; do
     short="${p%@*}"
     if grep -qF "$p" <<<"$installed"; then skip "$short installed"
     else CLAUDE_CONFIG_DIR="$dir" claude plugin install "$p" --scope user \
-      && ok "installed $p" || warn "install failed for $p (marketplace missing or offline?)"; fi
+      && { ok "installed $p"; plugins_installed=1; } \
+      || warn "install failed for $p (marketplace missing or offline?)"; fi
   done
   # A marketplace's autoUpdate only refreshes its catalog — it never bumps an
   # already-installed plugin's version, so accounts drift silently (throughline
@@ -96,6 +98,18 @@ while IFS= read -r dir; do
   done < <(CLAUDE_CONFIG_DIR="$dir" claude plugin list 2>/dev/null \
              | grep -oE '[A-Za-z0-9_.-]+@[A-Za-z0-9_.-]+' | sort -u || true)
 done < <(claude_account_dirs)
+
+# `claude plugin install` switches on what it installs, in that account's
+# settings.json. A full ./setup.sh runs config before this step, so a plugin
+# the repo pins off (base `false`, like frontend-design or the Shopify toolkit)
+# would stay on until the next config run: how the Shopify toolkit came on in
+# every account on a second device. Re-apply the settings now instead (which
+# leaves a settings.json.bak.<ts> in each account it changes). A config failure
+# warns rather than aborting, so the skill linking below still runs.
+if (( plugins_installed )); then
+  log "A plugin was installed; re-applying settings so enabledPlugins matches the repo"
+  bash "$DOTFILES/lib/20-config.sh" || warn "settings re-apply failed — run ./setup.sh config"
+fi
 
 # --- Build canonical skill set in ~/.claude/skills/ ---
 mkdir -p "$HOME/.claude/skills"

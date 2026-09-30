@@ -7,7 +7,7 @@ DOTFILES="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 issues=()
 
 # 1. Managed files. CLAUDE.md is a symlink into the repo. settings.json is a real
-# generated file that must byte-match base ⊕ overlay ⊕ its own runtime keys —
+# generated file whose CONTENT must match base ⊕ overlay ⊕ its own runtime keys —
 # regenerating with --runtime <itself> is a pure idempotency check, so any
 # hand-edit or un-propagated base change shows up as a diff. Name derivation
 # stays in lockstep with lib/20-config.sh.
@@ -20,9 +20,32 @@ for dir in "$HOME/.claude" "$HOME"/.claude-*; do
   overlay_args=(); [[ -f "$overlay" ]] && overlay_args=(--overlay "$overlay")
   if [[ -L "$dir/settings.json" ]]; then
     issues+=("$dir/settings.json is a symlink — run ./setup.sh config to migrate to a generated file")
-  elif ! python3 "$DOTFILES/tools/settings-merge.py" "$DOTFILES/claude/settings.json"       ${overlay_args[@]+"${overlay_args[@]}"} --runtime "$dir/settings.json" 2>/dev/null       | cmp -s - "$dir/settings.json"; then
+  elif ! python3 "$DOTFILES/tools/settings-merge.py" "$DOTFILES/claude/settings.json"       ${overlay_args[@]+"${overlay_args[@]}"} --runtime "$dir/settings.json" 2>/dev/null       | python3 "$DOTFILES/tools/json-same.py" - "$dir/settings.json"; then
     issues+=("$dir/settings.json differs from base${overlay_args:+ + $name overlay} — re-run ./setup.sh config, or fold deliberate drift into base/overlay")
   fi
+  # 1b. Plugins and marketplaces only this account has — switched on in-app. They
+  # survive config (settings-merge.py ADDITIVE_KEYS), so nothing else would ever
+  # mention them; surface them until they are folded into the repo on purpose.
+  [[ -f "$dir/settings.json" && ! -L "$dir/settings.json" ]] || continue
+  while IFS= read -r line; do
+    issues+=("$line")
+  done < <(python3 "$DOTFILES/tools/settings-merge.py" "$DOTFILES/claude/settings.json" \
+      ${overlay_args[@]+"${overlay_args[@]}"} 2>/dev/null \
+    | python3 -c '
+import json, sys
+try:
+    repo = json.load(sys.stdin)
+    acct = json.load(open(sys.argv[1]))
+except ValueError:
+    sys.exit(0)   # malformed base or account file: check 1 already reports it
+for key in ("enabledPlugins", "extraKnownMarketplaces"):
+    have, declared = acct.get(key), repo.get(key)
+    if not isinstance(have, dict):
+        continue
+    for name in have:
+        if not isinstance(declared, dict) or name not in declared:
+            print(f"{sys.argv[2]}: {key}.{name} is not declared in the repo — add it to claude/accounts/{sys.argv[3]}.settings.json and to the matching list in lib/30-skills.sh to keep it deliberately")
+' "$dir/settings.json" "$dir" "$name")
 done
 
 # 2. Uncommitted drift in the shared config — the harness writes through the symlinks.

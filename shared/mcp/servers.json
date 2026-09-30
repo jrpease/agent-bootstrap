@@ -5,7 +5,7 @@
     "`accounts` then selects homes within that agent BY NAME, where the default",
     "home is called \"default\" on both sides.",
     "Claude registration: lib/60-mcp.sh. Codex: tools/codex-config-merge.py.",
-    "shopify-dev-mcp below is scoped to a \"work\" account purely to show the",
+    "shopify-dev-mcp below is scoped to the \"work\" account, which shows the",
     "`accounts` key in use \u2014 rename or drop it to match your own accounts."
   ],
   "mcpServers": {
