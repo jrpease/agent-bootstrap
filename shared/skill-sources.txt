@@ -1,9 +1,13 @@
-# One source per line: <repo-url> [skill names...]
+# One source per line: <repo-url>@<commit> [skill names...]
+# - @<commit> pins the source: the skills step installs that commit, never whatever
+#   was pushed today. Use the full 40-character commit (GitHub won't fetch a short
+#   one), and GitHub URLs only. tools/fleet-health.sh says once when upstream has
+#   moved on; bump the commit here to take it. A URL without @<commit> tracks HEAD.
 # - URL alone        -> installs ALL skills from the repo (--all)
 # - URL + skill names -> installs only those skills (--skill each)
 # Blank lines and # comments are ignored.
-https://github.com/vercel-labs/skills find-skills
+https://github.com/vercel-labs/skills@48dc9e8eb8aa19040e91cb90ba0b642c9cbad57e find-skills
 # Matt Pocock's composable skills — the lean replacements for superpowers.
 # grilling/grill-me cover the brainstorm slot; diagnosing-bugs replaces
 # systematic-debugging; research + prototype fill the thinking/building slots.
-https://github.com/mattpocock/skills grilling grill-me diagnosing-bugs research prototype wait-what
+https://github.com/mattpocock/skills@f3fc5632f401156837ee3872f14fe33ccf1024ea grilling grill-me diagnosing-bugs research prototype wait-what

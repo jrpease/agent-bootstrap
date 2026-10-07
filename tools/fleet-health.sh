@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # fleet-health.sh — weekly deterministic drift check across Claude accounts.
 # Scheduled weekly by the health step (lib/72-health.sh), from the live copy.
-# Silent when clean; macOS notification + nonzero exit when something drifted.
+# Silent when clean; macOS notification + nonzero exit when something drifted. Newer
+# upstream versions of pinned sources notify separately, once each (check 6).
 set -uo pipefail
 DOTFILES="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 issues=()
@@ -119,6 +120,26 @@ PYEOF
 while IFS= read -r line; do
   issues+=("$line")
 done < <(python3 "$DOTFILES/tools/model-check.py" "$HOME" "$DOTFILES" 2>&1 || echo "model routing: tools/model-check.py failed to run")
+
+# 6. Pins. An unpinned source is drift. A pin upstream has moved past is not: it
+# gets its own quieter notification, once per new upstream version (the lines name
+# the version, so a new one reads as new), so weekly upstream churn never buries
+# real drift. Unreadable upstream (offline) is logged only.
+updates=() fresh=0
+seen="$HOME/Library/Logs/claude-fleet-health.updates-seen"
+while IFS=$'\t' read -r kind msg; do
+  case "$kind" in
+    drift)  issues+=("$msg") ;;
+    update) updates+=("$msg"); grep -qxF "$msg" "$seen" 2>/dev/null || fresh=$((fresh + 1)) ;;
+    note)   echo "pins: $msg" ;;
+    *)      [[ -n "$kind" ]] && issues+=("pins: $kind $msg") ;;
+  esac
+done < <(python3 "$DOTFILES/tools/pin-check.py" "$DOTFILES" 2>&1 || echo "pins: tools/pin-check.py failed to run")
+if (( ${#updates[@]} )); then
+  printf 'update available: %s\n' "${updates[@]}"
+  mkdir -p "$(dirname "$seen")"; printf '%s\n' "${updates[@]}" > "$seen"
+  (( fresh )) && osascript -e "display notification \"$fresh new upstream version(s) to review — see ~/Library/Logs/claude-fleet-health.log\" with title \"Claude fleet: updates available\"" 2>/dev/null
+fi
 
 if (( ${#issues[@]} )); then
   printf '%s\n' "${issues[@]}"

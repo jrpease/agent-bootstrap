@@ -135,6 +135,23 @@ if [[ -f "$sources" ]] && have_cmd npx; then
     parts=($line)            # word-split: parts[0]=url, parts[1..]=skill names
     url="${parts[0]:-}"
     [[ -z "$url" ]] && continue
+    # <url>@<commit>: the CLI only clones branches and tags, so check the commit out
+    # into a cache and install from that folder (installs are copies, not links to it).
+    src="$url"
+    if [[ "$url" == *github.com/*@* ]]; then
+      ref="${url##*@}"; url="${url%@*}"
+      src="$HOME/.cache/agent-bootstrap/skill-sources/${url#*github.com/}"
+      if [[ ! "$ref" =~ ^[0-9a-f]{40}$ ]]; then
+        warn "$url@$ref: pin a full 40-character commit (GitHub won't fetch a short one) — skipping it"; continue
+      fi
+      if { [[ -d "$src/.git" ]] || git clone -q "$url" "$src"; } \
+         && { git -C "$src" cat-file -e "$ref^{commit}" 2>/dev/null || git -C "$src" fetch -q origin "$ref"; } \
+         && git -C "$src" checkout -q --detach "$ref"; then
+        info "$url pinned at ${ref:0:7}"
+      else
+        warn "could not check out $url at $ref in $src — skipping it (delete $src to start clean)"; continue
+      fi
+    fi
     flags=()
     if [[ "${#parts[@]}" -gt 1 ]]; then
       for s in "${parts[@]:1}"; do flags+=(--skill "$s"); done
@@ -148,7 +165,7 @@ if [[ -f "$sources" ]] && have_cmd npx; then
     # which the default-account export sets to ~/.claude-<name>. Unset, it targets the
     # canonical ~/.claude/skills that step 3 mirrors from; left set, installs land in one
     # account and never reach the others.
-    env -u CLAUDE_CONFIG_DIR npx --yes skills add "$url" "${flags[@]}" -g -a claude-code -y </dev/null \
+    env -u CLAUDE_CONFIG_DIR npx --yes skills add "$src" "${flags[@]}" -g -a claude-code -y </dev/null \
       || warn "npx skills add failed for $url"
   done < "$sources"
 elif [[ -f "$sources" ]]; then
