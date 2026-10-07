@@ -27,9 +27,11 @@ err()  { printf '    %s✗%s %s\n' "$_C_RED" "$_C_RESET" "$*" >&2; }
 
 have_cmd() { command -v "$1" >/dev/null 2>&1; }
 
-# confirm "prompt" -> 0 if yes (default yes on empty input).
+# confirm "prompt" -> 0 if yes (default yes on empty input). With no terminal
+# there's nobody to answer, so it fails closed rather than reading EOF as yes.
 confirm() {
   local reply
+  [[ -t 0 ]] || { warn "no terminal, answering no: $1"; return 1; }
   read -r -p "    $1 [Y/n] " reply || reply=""
   [[ -z "$reply" || "$reply" =~ ^[Yy] ]]
 }

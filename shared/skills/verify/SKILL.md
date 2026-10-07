@@ -51,8 +51,13 @@ Fix → repeat until clean
   reference, not the DOM against the code.
 - Responsive states: every viewport the change plausibly affects, minimum the
   two above.
-- Pages on virtual scroll (Lenis/Locomotive) ignore `window.scrollTo` — drive
-  real wheel events or captures will show one frame five times.
+- Pages on virtual scroll (Lenis/Locomotive): try
+  `window.scrollTo({ top, behavior: 'instant' })` first and assert the scroll
+  progress you expected. Stepped wheel events overshoot, because Lenis keeps
+  gliding after each one. Fall back to wheels (or click, then PageDown) only
+  when the page ignores `scrollTo` and captures show one frame five times.
+- Headless Chrome ignores the autoplay policy, so "audio waits for a gesture"
+  can't be verified headless.
 
 ## 3 · The heavy harness (marketing/campaign pages)
 

@@ -35,7 +35,7 @@ account_name() {
 #   ⊕  runtime keys preserved from the account's existing file (autoMode), plus
 #      plugins and marketplaces added in-app (settings-merge.py ADDITIVE_KEYS).
 #
-# A real file, not a symlink: harness runtime writes (/model toggles, auto mode's
+# A real file, not a symlink: harness runtime writes (auto mode's
 # per-project trust profiles) stay in the account instead of smearing into the
 # repo and every other account (one account's per-project trust profile once
 # ended up in all of them that way). But not

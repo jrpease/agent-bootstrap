@@ -2,6 +2,13 @@
 # desc: Create your named Claude accounts, their aliases, and the default
 source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/lib/common.sh"
 
+# Every answer here rewrites account aliases, so refuse before touching anything.
+if [[ ! -t 0 ]]; then
+  err "accounts is interactive and stdin isn't a terminal."
+  info "Run it by hand: ./setup.sh accounts. To re-sync without it: ./setup.sh --from config"
+  exit 1
+fi
+
 # Account aliases are personal (your account names) and device-specific, so they
 # live in the machine-local, never-committed shell file — NOT the shared repo zshrc.
 # Create it from the template if the secrets step hasn't run yet so the secrets header is kept.
@@ -52,8 +59,6 @@ for nm in "${codex_homes[@]}"; do
   if [[ "$nm" == "default" ]]; then home="$HOME/.codex"; else home="$HOME/.codex-$nm"; fi
   if [[ -f "$home/auth.json" ]]; then
     skip "codex-$nm already authenticated"
-  elif [[ ! -t 0 ]]; then
-    warn "no TTY — skipping 'codex login' for $nm; run: CODEX_HOME=$home codex login"
   elif confirm "Log in to Codex ($nm) now?"; then
     CODEX_HOME="$home" codex login || warn "codex login for $nm did not complete"
   else
