@@ -139,6 +139,7 @@ Mechanical, gates like the detector, does not go to the critic. Same URL, same r
 | INP | ≤ 200ms |
 | Long frames (>16.7ms) during any scripted interaction | ≤ 10% |
 | Worst single frame | ≤ 50ms |
+| Hero GLB, after `gltf-transform optimize` *(provisional)* | ≤ 2 MB transferred · textures ≤ 2048px · ≤ 100k triangles |
 
 ```bash
 node reference/perf.mjs http://127.0.0.1:<port>/
@@ -156,6 +157,28 @@ input was driven. Report absent measurements as `not measured — <reason>`.
 
 A missed budget resolves in order: profile → fix the execution → change the delivery family → only
 then reduce scope, recording what was cut and what forced it.
+
+**Immersive floors** — only when the page follows `immersive.md`. Pass/fail, both widths:
+
+| Check | Passes when |
+|---|---|
+| Lite parity | The lite route or mode renders the same headings, copy and CTA, in the same order, as the full tier — diff the two pages' DOM text |
+| Scene failed | With the canvas removed or WebGL/WebGPU blocked, the copy, navigation and CTA all render and work |
+| Reduced motion | Under `prefers-reduced-motion: reduce`, no scroll-scrubbed camera runs; the poster or lite tier shows |
+| Canvas text | Every word drawn in the canvas has a DOM twin; the canvas is `aria-hidden` |
+| Keyboard | Every stop of the scroll story is reachable by Tab or a link |
+
+**Sequence floors** — only when the page follows `sequence.md`. Pass/fail, both widths, read from
+the network panel and the render:
+
+| Check | Passes when |
+|---|---|
+| Weight | MB per sequence per tier reported; the phone tier is what a ≤ 820px viewport fetches |
+| First scrub | The coarse pass (every 32nd frame) has arrived before the reader reaches the section |
+| Poster | Frame 0 is an `<img>` that paints first; the canvas replaces it in place |
+| Memory | Frames are held compressed — no tab holding hundreds of MB of decoded bitmaps |
+| Scroll | Find-in-page and keyboard scrolling move the page; smoothing is off under reduced motion |
+| In-betweens | For a keyframed film (`sequence.md` §2): the contact sheet shows no part appearing, vanishing, or changing shape or count mid-move on a subject that must be exact. Checked on the source film, before the build |
 
 ---
 
@@ -196,7 +219,9 @@ signature scene that is a fade; an authored artifact that is a font choice; chro
 
 **3 · Studio review.** Name the three criticisms a jury of world-class studios would make first,
 each anchored to a specific frame and viewport. **`should-fix` by default**, rising where one
-independently meets a higher bar.
+independently meets a higher bar. Include any piece that reads as a stock registry component
+(Magic UI, React Bits, 21st) — `should-fix`, and **`blocking`** when that piece is the
+most memorable thing on the page (`sources.md` §1).
 
 **4 · Positive floor, measured.** Report each as a number, never an adjective: type contrast ratio;
 whether a still matches the named hero frame; focal hierarchy as `named / screens`; the emptiest

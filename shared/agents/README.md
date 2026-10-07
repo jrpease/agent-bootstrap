@@ -4,12 +4,12 @@ Four agents, carved by **work type** rather than model tier, so the call at the
 point of work is "what kind of task is this" — not "which model does this
 deserve." The model is an implementation detail baked into each definition.
 
-| Agent | Model | Work |
-|---|---|---|
-| `scout` | `haiku` | Bulk reading, codebase search, "where is X" |
-| `implementer` | `sonnet` | The same decided edit across many files; long transcription |
-| `critic` | `fable` | Reviewing a spec, plan, or diff |
-| `design-critic` | `fable` | Fresh-context visual judgment on rendered design work |
+| Agent | Claude | Codex | Work |
+|---|---|---|---|
+| `scout` | `haiku` | `gpt-6-luna` · high | Bulk reading, codebase search, "where is X" |
+| `implementer` | `sonnet` | `gpt-6.1-sol` · medium | The same decided edit across many files; long transcription |
+| `critic` | `fable` | `gpt-6-astra` · high | Reviewing a spec, plan, or diff |
+| `design-critic` | `fable` | `gpt-6-astra` · high | Fresh-context visual judgment on rendered design work |
 
 ## Routing
 
@@ -52,10 +52,11 @@ different model access, and a plan change means editing these files.
 
 ## Re-mapping
 
-**The `model:` line lives in `claude/agents/<name>.meta.yml`, not in the body.** Nothing
-generates or derives it.
+**The `model:` line lives in `claude/agents/<name>.meta.yml` and `model =` in
+`codex/agents/<name>.meta.toml`, not in the body.** Nothing generates or derives them.
+Codex's main model is the `--model` default in `tools/codex-config-merge.py`.
 
-`./setup.sh verify` prints the current bindings, so the roster surfaces on
+`./setup.sh verify` prints the current Claude bindings (the Codex block only counts roles), so the roster surfaces on
 every setup run — new machines and updates, the moments worth reconsidering it.
 
 ## What does and does not drift
@@ -66,6 +67,11 @@ every setup run — new machines and updates, the moments worth reconsidering it
   no edit.
 - **A family retired or renamed** — dispatch fails with an error naming the
   model. Loud and immediate; it cannot silently downgrade you to a weaker model.
+- **Codex models go stale** — Codex has no family aliases, so its models are
+  version strings. `tools/fleet-health.sh` (via `tools/model-check.py`) flags any
+  configured Codex model Codex no longer lists, one Codex marks for retirement,
+  or one with a newer generation of the same tier listed. It also flags a Claude model written as a pinned version
+  instead of an alias.
 - **The assignment going stale** — a future Haiku strong enough for implementer
   work, or a new family landing between tiers, needs a human re-read. Not
   detectable, not automatable. This file exists so that re-read has the original
@@ -73,8 +79,9 @@ every setup run — new machines and updates, the moments worth reconsidering it
 
 ## Adding an agent
 
-Drop a `<name>.md` here with `name:`, `description:`, `model:`, and `tools:`
-frontmatter, then run `./setup.sh skills`. Keep `description:` on a **single
+Drop a `<name>.md` here with `name:` and `description:` frontmatter, add its
+`claude/agents/<name>.meta.yml` (`model:`, `tools:`) and `codex/agents/<name>.meta.toml`
+(`model`, `model_reasoning_effort`), then run `./setup.sh skills`. Keep `description:` on a **single
 line** — `lib/70-verify.sh` reads it with `sed`.
 
 This file is excluded from the link pass in `lib/30-skills.sh`; only

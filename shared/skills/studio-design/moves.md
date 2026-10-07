@@ -253,6 +253,11 @@ objects — use primitives or a bought model, never generative, for those.
 **Prototype the interaction on a placeholder, confirm it earns its place, then commission the hero
 asset.** The code does not change.
 
+**Making the asset:** `three-d.md` — which rung, Blender or Spline, how an agent drives each, and the
+GLB pipeline. **A scene the visitor travels through:** `immersive.md` — authored camera paths,
+capability tiers, the lite route. **A filmed world scrubbed by scroll:** `sequence.md` — the
+pre-rendered sequence family built as a whole page, from generated stills to the frame loader.
+
 ---
 
 ## F · Performance budget

@@ -6,12 +6,25 @@
     "home is called \"default\" on both sides.",
     "Claude registration: lib/60-mcp.sh. Codex: tools/codex-config-merge.py.",
     "shopify-dev-mcp below is scoped to the \"work\" account, which shows the",
-    "`accounts` key in use \u2014 rename or drop it to match your own accounts."
+    "`accounts` key in use \u2014 rename or drop it to match your own accounts.",
+    "`requires_app` (optional): an app bundle path. Both registration paths skip",
+    "the server on a device where that path doesn't exist.",
+    "`disabled_tools` (optional, Codex only): tool names hidden from Codex. Claude",
+    "Code has no per-server equivalent.",
+    "`headers_lastpass` (optional, http servers): {header: LastPass item}. The",
+    "item's password field is read at setup time (tools/mcp_secrets.py) and written",
+    "into each agent's local config; the server is skipped while the vault is locked.",
+    "21st below names an item in this author's vault \u2014 rename it to one in yours,",
+    "or drop the server."
   ],
   "mcpServers": {
     "composio": {
       "type": "http",
       "url": "https://connect.composio.dev/mcp"
+    },
+    "mobbin": {
+      "type": "http",
+      "url": "https://api.mobbin.com/mcp"
     },
     "shopify-dev-mcp": {
       "type": "stdio",
@@ -24,6 +37,72 @@
       "accounts": [
         "work"
       ]
+    },
+    "spline": {
+      "type": "stdio",
+      "command": "/Applications/Spline.app/Contents/MacOS/Spline",
+      "args": [
+        "/Applications/Spline.app/Contents/Resources/spline-mcp.cjs"
+      ],
+      "env": {
+        "ELECTRON_RUN_AS_NODE": "1"
+      },
+      "requires_app": "/Applications/Spline.app",
+      "disabled_tools": [
+        "2d_load_skill",
+        "2d_create_file",
+        "2d_find_space",
+        "2d_generate_images",
+        "2d_edit_image",
+        "2d_resize_frame",
+        "2d_update_scene",
+        "2d_get_object",
+        "2d_update_objects",
+        "2d_recolor",
+        "2d_add_objects",
+        "2d_move_objects",
+        "2d_delete_objects",
+        "2d_get_scene",
+        "2d_duplicate_objects",
+        "2d_reserve_frames",
+        "2d_write_html",
+        "2d_export_html",
+        "2d_upload_assets",
+        "2d_get_canvas_state",
+        "2d_review_frame"
+      ]
+    },
+    "blender": {
+      "type": "stdio",
+      "command": "blender-mcp",
+      "args": [],
+      "requires_app": "/Applications/Blender.app"
+    },
+    "magicui": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@magicuidesign/mcp@latest"
+      ],
+      "env": {}
+    },
+    "vgpu": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "vgpu@latest",
+        "mcp"
+      ],
+      "env": {}
+    },
+    "21st": {
+      "type": "http",
+      "url": "https://21st.dev/api/mcp",
+      "headers_lastpass": {
+        "x-api-key": "studio-gen/personal-21stdev"
+      }
     }
   }
 }

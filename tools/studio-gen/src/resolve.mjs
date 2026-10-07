@@ -38,6 +38,7 @@ export function resolveRequest(parsed) {
     prompt,
     provider: r.provider,
     modelId: r.modelId,
+    magnific: r.magnific,
     kind: r.kind,
     out: parsed.out ?? defaultOut(command, prompt),
     params,
@@ -47,7 +48,8 @@ export function resolveRequest(parsed) {
 export function formatRequest(req) {
   return [
     `command : ${req.command}`,
-    `model   : ${req.model}  (${req.provider} → ${req.modelId})`,
+    `model   : ${req.model}  (${req.provider} → ${req.modelId})` +
+      (req.magnific ? `\n          (magnific → ${req.magnific.create}, used when the account has a magnific key)` : ''),
     `prompt  : ${req.prompt}`,
     `out     : ${req.out}`,
     `params  : ${JSON.stringify(req.params)}`,

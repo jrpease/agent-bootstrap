@@ -1,4 +1,6 @@
 # Codex projection for shared/agents/scout.md.
 # No `tools` and no `sandbox_mode`: a Codex agent role parses both and
 # silently discards them, so writing one would only look like a constraint.
-model_reasoning_effort = "low"
+model = "gpt-6-luna"
+# OpenAI's subagent guidance: start GPT-6 Luna at high; the small model wants more reasoning.
+model_reasoning_effort = "high"

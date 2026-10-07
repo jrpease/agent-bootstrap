@@ -261,6 +261,8 @@ page measured at **53.5 viewports**.
 **Measured:** 8–116.8px (14.6×, 19 distinct sizes) · easing `0.22,1,0.36,1` at 0.42–0.52s.
 **Why it wins:** the strangeness *is* the argument, and it never winks.
 **Cost to beat:** name the uncomfortable idea first, then stage it with real production values.
+**Built:** generated stills → video → WebP frame sequences scrubbed in one pinned stage, under one
+print-like transition shader; no 3D library. The method is `sequence.md`.
 
 ### 53 · e2.vc — VASA — corporate
 **What it is:** A VC firm whose page is annotated by hand.

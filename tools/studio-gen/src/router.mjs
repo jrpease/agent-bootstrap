@@ -5,11 +5,15 @@
 //   image-to-video / top-fidelity → seedance ; dialogue/human → veo ; budget-draft → kling
 // Note: the native-audio axis (Omni Flash) is not wired — it is not a long-running
 // generateVideos model, so the current geminiVideo adapter can't drive it. Follow-up.
+// `magnific` is the same model via the Magnific API: an account with a magnific
+// key uses it instead of fal (see video.mjs).
 export const ROUTES = {
   'nano-banana': { provider: 'gemini', kind: 'image', modelId: 'gemini-3-pro-image' },
   'gpt-image':   { provider: 'openai', kind: 'image', modelId: 'gpt-image-2' },
-  'seedance':    { provider: 'fal',    kind: 'video', modelId: 'bytedance/seedance-2.0/text-to-video' },
-  'kling':       { provider: 'fal',    kind: 'video', modelId: 'fal-ai/kling-video/v3/standard/text-to-video' },
+  'seedance':    { provider: 'fal',    kind: 'video', modelId: 'bytedance/seedance-2.0/text-to-video',
+                 magnific: { create: 'video/seedance-2-pro-1080p', poll: 'video/seedance-2-pro', durationAs: 'number' } },
+  'kling':       { provider: 'fal',    kind: 'video', modelId: 'fal-ai/kling-video/v3/standard/text-to-video',
+                 magnific: { create: 'video/kling-v3-std', poll: 'video/kling-v3', durationAs: 'string' } },
   'veo':         { provider: 'gemini', kind: 'video', modelId: 'veo-3.1-generate-preview' },
 }
 

@@ -59,7 +59,7 @@ fi
 # 2b. The generated CLAUDE.md still matches its sources. The harness writes
 # through the account symlinks into this file, so a stray edit lands here and
 # would be silently overwritten by the next ./setup.sh config.
-if ! python3 "$DOTFILES/tools/compose-instructions.py" --agent claude 2>/dev/null \
+if ! python3 "$DOTFILES/tools/compose-instructions.py" --agent claude --root "$DOTFILES" 2>/dev/null \
      | cmp -s - "$DOTFILES/claude/CLAUDE.md"; then
   issues+=("claude/CLAUDE.md differs from core + addendum — re-run ./setup.sh config, or fold the edit into shared/instructions/core.md")
 fi
@@ -95,6 +95,16 @@ for name, accts in sorted(versions.items()):
         print(f"plugin version drift: {name} ({detail})")
 PYEOF
 )
+
+# 5. Model routing is current. Claude models must be family aliases (haiku,
+# sonnet, opus, fable), which always resolve to the newest release — a pinned
+# version id stops tracking. Codex has no aliases, so each configured model is
+# checked against Codex's own model list: gone, hidden, marked for retirement,
+# or behind a newer generation of its own tier is drift. A brand-new Claude family is not detectable
+# here — see shared/agents/README.md.
+while IFS= read -r line; do
+  issues+=("$line")
+done < <(python3 "$DOTFILES/tools/model-check.py" "$HOME" "$DOTFILES" 2>&1 || echo "model routing: tools/model-check.py failed to run")
 
 if (( ${#issues[@]} )); then
   printf '%s\n' "${issues[@]}"

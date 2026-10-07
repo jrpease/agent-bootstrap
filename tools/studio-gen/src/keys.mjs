@@ -1,8 +1,8 @@
 import { execFileSync } from 'node:child_process'
 
-export const PROVIDERS = ['gemini', 'fal', 'openai']
+export const PROVIDERS = ['gemini', 'fal', 'openai', 'magnific']
 
-const SHARED_ENV = { gemini: 'GEMINI_API_KEY', fal: 'FAL_KEY', openai: 'OPENAI_API_KEY' }
+const SHARED_ENV = { gemini: 'GEMINI_API_KEY', fal: 'FAL_KEY', openai: 'OPENAI_API_KEY', magnific: 'MAGNIFIC_API_KEY' }
 
 export function sharedEnvVar(provider) {
   const v = SHARED_ENV[provider]

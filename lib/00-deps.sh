@@ -51,6 +51,15 @@ else log "Installing fnm"; brew install fnm; fi
 if have_cmd ffmpeg; then ok "ffmpeg present"
 else log "Installing ffmpeg"; brew install ffmpeg; fi
 
+# webp — cwebp encodes studio-design frame sequences (reference/sequence-cut.sh);
+# many ffmpeg builds ship without a WebP encoder.
+if have_cmd cwebp; then ok "webp present"
+else log "Installing webp"; brew install webp; fi
+
+# uv (runs the Blender MCP server — see the blender step)
+if have_cmd uv; then ok "uv present"
+else log "Installing uv"; brew install uv; fi
+
 # lastpass-cli (studio-gen reads per-account API keys from the vault)
 if have_cmd lpass; then ok "lastpass-cli present"
 else log "Installing lastpass-cli"; brew install lastpass-cli; fi

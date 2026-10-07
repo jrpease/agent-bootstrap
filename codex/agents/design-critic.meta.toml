@@ -1,4 +1,5 @@
 # Codex projection for shared/agents/design-critic.md.
 # No `tools` and no `sandbox_mode`: a Codex agent role parses both and
 # silently discards them, so writing one would only look like a constraint.
+model = "gpt-6-astra"
 model_reasoning_effort = "high"

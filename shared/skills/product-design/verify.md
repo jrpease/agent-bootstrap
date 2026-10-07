@@ -99,7 +99,7 @@ forgettable work.
 
 | # | Item | Severity | Fails when | Judged from |
 |---|---|---|---|---|
-| 1 | **Canon rank** | blocking | The flow places below a named canon target on any axis the media shows. The critic's first act is to name a product that does this better; "none" must be earned. | canon captures, `canon.md`, contact sheets |
+| 1 | **Canon rank** | blocking | The flow places below a named canon target or a precedent screen on any axis the media shows. The critic's first act is to name a product that does this better; "none" must be earned. | canon captures, precedent set, `canon.md`, contact sheets |
 | 2 | **Signature moment** | blocking | Absent from the recordings, or present but not readable as a signature — a viewer not told where to look cannot name it. *The measured half is the amplitude gate's; report its verdict, do not recompute it.* | recordings, gate result |
 | 3 | **Ceiling reach** | blocking | Judged against bar item 7 — motion, micro-animation, considered transitions, authored imagery. **"Competent and complete" is an explicit failure verdict**, named here so the critic has permission to use it. | recordings, contact sheets |
 | 4 | Hierarchy | blocking | The hard screen has no nameable subject; priority is not readable cold. | contact sheets, `craft.md` |
@@ -124,6 +124,7 @@ receives-list below is a bug in this file, not a judgment call for the critic.
 - The recordings for the signature moment and every declared moment.
 - The capture manifest.
 - The canon captures for the 2–3 named targets.
+- **The precedent set** — the saved Mobbin images from `design/precedent/`.
 - **`canon.md`** — the craft floors item 8 escalates against, and the per-type medians.
 - **`SKILL.md`** — the tell list item 7 checks against.
 - **`craft.md`** — the measurement definitions behind item 8.

@@ -26,7 +26,9 @@ build the page. Judge the result against real work, not against your own brief.
 
 **1 · Inspect.** Read the repo: routing, styling, animation libs, existing tokens, committed
 typefaces, brand assets, **existing photography** (the highest-value find), a reachable live site.
-Then check what this environment can produce: `studio-gen` on `PATH`, Blender, a browser driver.
+Then check what this environment can produce: `studio-gen` on `PATH`, a browser driver, the
+Blender and Spline MCP tools (`three-d.md` §2), and the vgpu, Magic UI and Mobbin MCP tools
+(`sources.md`).
 An uninventoried capability is an unavailable one.
 
 **2 · Intake.** Ask three questions and nothing else. *What should this feel like — is there a
@@ -59,22 +61,26 @@ infer absence: if the client has answered anything at all this session, they are
 Values, not reasons.
 
 **6 · Build.** Signature scene first, at full declared amplitude, with its real asset — then look
-at it running before anything else is built. Then sections. Chrome is designed, not defaulted
-(`moves.md` §D). Ship one **authored artifact**.
+at it running before anything else is built. Then sections — source the plumbing and the
+materials, author the rest (`sources.md`). Chrome is designed, not defaulted (`moves.md` §D). Ship
+one **authored artifact**.
 
 **7 · Verify.** Run the loop in `verify.md`.
 
 ## Where the run stops
 
-The run halts and waits for the client at exactly three points. These are stops, not
+The run halts and waits for the client at exactly four points. These are stops, not
 notifications — do not proceed on an assumption about what the answer would have been.
 
 1. **Intake (step 2)** — the three questions.
 2. **Comp (step 4)** — three heroes presented, client picks one.
 3. **Any floor override** — a floor may only be overridden with the client's agreement, or, when
    nobody is reachable, with the override recorded as an assumption.
+4. **A client-made asset the tools cannot make** — a Spline export (the Spline MCP cannot export;
+   `three-d.md` §5) or a keyframed film made outside studio-gen (`sequence.md` §2). Name exactly
+   what the client should make.
 
-Unattended runs proceed through all three and record each as an assumption in `DESIGN.md`. A run
+Unattended runs proceed through all four and record each as an assumption in `DESIGN.md`. A run
 that had a client and did not stop has skipped a step, not saved one.
 
 ## DESIGN.md
@@ -103,6 +109,8 @@ Signature scene: <5-line storyboard — what the visitor sees, in order>
 Authored artifact: <what is being made — not selected, not generated>
 Chrome: nav · menu · footer · cursor · selection · focus · scrollbar · entrance · 404
 Material: subject · framing · light · treatment · integration · placements
+Sourced: <piece · source · licence · what changed, or none>
+Tiers: <full / reduced / lite — what each gets and what triggers it, or n/a> (immersive.md §4)
 Floors overridden: <name + reason, or none>
 ```
 
@@ -168,8 +176,9 @@ once, at the end, as its own task: motion density is a page-level property.
 
 Unless the repo says otherwise: Next.js App Router, TypeScript, Tailwind, Framer Motion (component
 animation), GSAP + ScrollTrigger (scrubbed scroll), Lenis (smooth-scroll substrate), SVG/CSS/Canvas
-for custom graphics, R3F only when real 3D earns it, shadcn/ui as structural foundation and never
-as the visible aesthetic. Different stack in the repo: preserve it, translate the principles.
+for custom graphics, R3F only when real 3D earns it — on three's `WebGPURenderer` with TSL
+(`immersive.md` §2) — shadcn/ui as structural foundation and never as the visible aesthetic.
+Different stack in the repo: preserve it, translate the principles.
 
 **Source of truth, in order:** existing brand/design system → product docs → methodology outputs →
 user preference → inferred mode → this skill's defaults. Extend a weak brand rather than replacing
@@ -183,3 +192,10 @@ it.
 - `worlds.md` — five complete copyable resolutions. Read at step 5.
 - `copy.md` — the jobs, the measured reference lines, the craft floor. Read at step 5, keep using.
 - `verify.md` — first-pixel check and the terminating loop. Read at steps 4 and 7.
+- `three-d.md` — the 3D ladder, driving Blender and Spline, GLB to the web. Read when a comp
+  reaches for 3D.
+- `immersive.md` — the staged-world build: Blender-authored paths, capability tiers, grade, loader,
+  sound, floors. Read when the signature scene is a world the visitor travels through.
+- `sequence.md` — the filmed-world build: generated stills to films to tiered WebP frames, the
+  frame loader, one timeline, shader transitions. Read when the signature is scrubbed footage.
+- `sources.md` — what may be sourced, where from, and how it is brought in. Read at step 6.

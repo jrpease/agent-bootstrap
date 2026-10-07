@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# blender-mcp — launch the official Blender Lab MCP server from the pinned clone
+# the blender step keeps at ~/.local/share/blender_mcp. servers.json registers
+# this PATH-resolved name, so no per-device home path is stored there.
+set -euo pipefail
+# MCP clients spawn this without a login shell; make Homebrew's uv findable.
+export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
+# The *_for_cli tools launch a background Blender; `blender` is not on PATH.
+export BLENDER_PATH="${BLENDER_PATH:-/Applications/Blender.app/Contents/MacOS/Blender}"
+exec uv --directory "$HOME/.local/share/blender_mcp/mcp" run blender-mcp "$@"

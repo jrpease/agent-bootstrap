@@ -42,5 +42,5 @@ else
   info "Open a new shell first if the studio-gen step just added the export."
 fi
 info "Keys live in LastPass as 'studio-gen/<account>-<provider>', key in the password field."
-info "Providers: gemini, fal, openai. Accounts: your claude-<name> alias names."
+info "Providers: gemini, fal, openai, magnific. Accounts: your claude-<name> alias names."
 info "Pin a project to an account with:  studio-gen account <name>"

@@ -28,6 +28,8 @@ import sys
 
 import tomlkit
 
+from mcp_secrets import resolve_headers  # sibling in tools/
+
 PROFILE_DENIES_HOME = ["~/.zshrc.local"]
 PROFILE_DENIES_WORKSPACE = ["**/.env", "**/.env.*", "**/secrets/**", "**/*.pem"]
 
@@ -73,7 +75,7 @@ def main() -> int:
     ap.add_argument("--profile", default="bootstrap")
     ap.add_argument("--approval-policy", default="on-request",
                     choices=["untrusted", "on-request", "never"])
-    ap.add_argument("--model", default="gpt-5.5")
+    ap.add_argument("--model", default="gpt-6-astra")
     ap.add_argument("--reasoning-effort", default="medium")
     ap.add_argument("--home-name", default="default",
                     help="which Codex home this is, for accounts: scoping")
@@ -101,10 +103,23 @@ def main() -> int:
                 continue
             if "accounts" in cfg and args.home_name not in cfg["accounts"]:
                 continue
+            # requires_app: skip on a device without that app bundle.
+            if cfg.get("requires_app") and not os.path.exists(cfg["requires_app"]):
+                print(f"  skip mcp {sid}: {cfg['requires_app']} not installed")
+                continue
+            # headers_lastpass: header values read from the vault at setup time.
+            headers, why = resolve_headers(cfg)
+            if why:
+                kept = " (keeping the existing entry)" if sid in servers else ""
+                print(f"  skip mcp {sid}{kept}: {why}")
+                continue
             entry = tomlkit.table()
-            for key in ("command", "args", "env", "url", "cwd", "startup_timeout_sec"):
+            for key in ("command", "args", "env", "url", "cwd", "startup_timeout_sec",
+                        "disabled_tools"):
                 if cfg.get(key):
                     entry[key] = cfg[key]
+            if headers:
+                entry["http_headers"] = headers
             servers[sid] = entry
             added.append(sid)
         doc["mcp_servers"] = servers
@@ -112,6 +127,7 @@ def main() -> int:
     out = pathlib.Path(args.out).expanduser() if args.out else resolve_through_symlinks(src)
     tmp = out.with_suffix(out.suffix + ".new")
     tmp.write_text(tomlkit.dumps(doc))
+    tmp.chmod(0o600)   # may hold secret headers (headers_lastpass)
     os.replace(tmp, out)
 
     kept = sorted(before - {"model", "model_reasoning_effort", "approval_policy",

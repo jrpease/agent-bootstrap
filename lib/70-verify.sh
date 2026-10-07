@@ -17,14 +17,14 @@ else
   # Fingerprint = first 12 hex of sha256. Not reversible to a key, and the ONLY
   # way to catch a key pasted into the wrong item or a knowingly-shared key that
   # has outlived its interim status: duplicates resolve silently at run time.
-  printf '    %-10s %-14s %-14s %-14s\n' "" gemini fal openai
+  printf '    %-10s %-14s %-14s %-14s %-14s\n' "" gemini fal openai magnific
   # One "<fingerprint> <account>-<provider>" record per present key. Kept as a
   # plain newline-delimited string (not an array) so this stays bash-3.2-safe.
   records=""
   lookup_errored=0
   while IFS= read -r acct; do
     row=$(printf '    %-10s' "$acct")
-    for prov in gemini fal openai; do
+    for prov in gemini fal openai magnific; do
       # LPASS_DISABLE_PINENTRY=1: without it, a locked vault can open an
       # interactive master-password prompt instead of failing fast. The prompt
       # text goes to /dev/null below, so the phase would hang with nothing on
@@ -153,7 +153,7 @@ info "1. Reload your shell so aliases + the default account take effect:"
 info "     source ~/.zshrc"
 info "2. Authenticate MCP servers PER ACCOUNT — auth is not shared between accounts."
 info "   For each account, run it then authenticate, e.g.:"
-info "     claude-<name>   ->   /mcp   (complete OAuth for composio, figma)"
+info "     claude-<name>   ->   /mcp   (complete OAuth for composio and any other OAuth server)"
 info "3. Composio SaaS apps (Gmail, Drive, Calendar, QuickBooks, Twilio, ...) are"
 info "   authorized through the Composio connection flow, not here."
 info "4. Git auth uses gh over HTTPS (no SSH key required). An SSH key is optional."

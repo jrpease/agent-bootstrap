@@ -41,7 +41,8 @@ Signed-in versus signed-out is **not** the cut. Guest flows and SEO app pages br
 libraries, test setup, and **how the data layer can be intercepted** — that last one sizes the
 state harness, so it is not optional. Detect the system mode (`systems.md`). Check what the
 environment can produce: a browser driver, `studio-gen` on `PATH`, axe, the perf and interaction
-harnesses. An uninventoried capability is an unavailable one.
+harnesses, and the Mobbin MCP tools (`precedent.md` §1). An uninventoried capability is an
+unavailable one.
 
 **2 · Intake — STOP.** Establish and confirm:
 - **The flow** — which screens, start to finish.
@@ -51,11 +52,13 @@ harnesses. An uninventoried capability is an unavailable one.
 - Any concept, constraint or reference already in the client's head.
 
 **3 · Target.** Open `canon.md`. Name **2–3 entries this flow must stand next to**, at least one
-from a different problem type. One line each on what it does that a default would not. These go in
-`SCREENS.md` and the critic ranks the shipped flow against them.
+from a different problem type. One line each on what it does that a default would not. Then pull
+the hard screen's **precedent** from Mobbin (`precedent.md` §2). Both go in `SCREENS.md` and the
+critic ranks the shipped flow against them.
 
 **4 · Inventory.** Build the state inventory and the state manifest from `states.md` — every state,
-every surface, and how each will be forced. Before any pixels.
+every surface, and how each will be forced — with Mobbin's real versions of each state beside it
+(`precedent.md` §2). Before any pixels.
 
 **5 · Comp — STOP.** Build **two directions for the hard screen, in real code, both fully
 state-complete**. Screenshot at every declared surface; record each one's signature moment. Present
@@ -131,6 +134,8 @@ The run's single output document, written at step 6. Named distinctly from `stud
 
 - Flow, surfaces, hard screen, system mode and the evidence for it.
 - Canon targets, and what each is borrowed for.
+- Precedent: the saved files under `design/precedent/`, each with its `mobbin_url` and one line on
+  what it solves — or `unavailable — <reason>`.
 - The spine — tokens and the component/layout inventory.
 - The state inventory **and** the state manifest, per surface.
 - The signature moment: what it marks, its type, and all five amplitude parameters.
@@ -144,7 +149,8 @@ Values, not reasons.
 
 ## Files
 
-`canon.md` — measured numbers, and what is not evidenced · `craft.md` — hierarchy, density,
+`canon.md` — measured numbers, and what is not evidenced · `precedent.md` — real screens and
+states from Mobbin, on demand · `craft.md` — hierarchy, density,
 spacing, colour · `states.md` — the inventory, the manifest, the contact sheet · `systems.md` — the
 three modes and the spine · `motion.md` — the signature moment and the five parameters ·
 `verify.md` — gates, rubric, critic contract.
