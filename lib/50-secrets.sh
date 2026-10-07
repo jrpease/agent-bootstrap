@@ -31,6 +31,21 @@ mark_end="# <<< agent-bootstrap zshrc <<<"
 block="$mark_start
 if [[ -f \"$DOTFILES/zshrc\" ]]; then source \"$DOTFILES/zshrc\"; fi
 $mark_end"
+# A ~/.zshrc that is a symlink to some checkout's zshrc (an older setup's shape)
+# keeps loading that checkout, and the append below would write through it into
+# that repo. It held nothing but the repo zshrc, so a real file holding the source
+# line is the same config, now read from this copy.
+if [[ -L "$zshrc" ]]; then
+  linked="$(cd "$(dirname "$(realpath "$zshrc")")" && pwd -P)"
+  if [[ "$(basename "$(realpath "$zshrc")")" == zshrc && -f "$linked/setup.sh" && -f "$linked/lib/50-secrets.sh" \
+        && "$linked" != "$(cd "$DOTFILES" && pwd -P)" ]]; then
+    bak="$zshrc.bak.$(date +%Y%m%d-%H%M%S)"
+    mv "$zshrc" "$bak"
+    printf '%s\n' "$block" > "$zshrc"
+    ok "replaced $zshrc (a link to $linked/zshrc) with a file that sources $DOTFILES/zshrc"
+    info "previous link kept at $bak — reload with: source ~/.zshrc"
+  fi
+fi
 [[ -f "$zshrc" ]] || touch "$zshrc"
 # If ~/.zshrc IS the repo zshrc (symlinked by an older setup), the config is
 # already loaded and there is nothing to wire. Without this guard the append

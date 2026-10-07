@@ -7,7 +7,8 @@ cli_dir="$DOTFILES/tools/studio-gen"
 
 if ! have_cmd node; then err "node missing — run ./setup.sh deps first"; exit 1; fi
 
-( cd "$cli_dir" && npm install --silent ) && ok "studio-gen deps installed"
+# `ci`, not `install`: install rewrites package-lock.json, which dirties the live copy.
+( cd "$cli_dir" && npm ci --silent ) && ok "studio-gen deps installed"
 
 chmod +x "$cli_dir/bin/studio-gen"
 # ~/.local/bin is already on PATH via the repo zshrc, so a symlink is all we need.

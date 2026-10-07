@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # fleet-health.sh — weekly deterministic drift check across Claude accounts.
-# Intended to run weekly (launchd, cron, or by hand).
+# Scheduled weekly by the health step (lib/72-health.sh), from the live copy.
 # Silent when clean; macOS notification + nonzero exit when something drifted.
 set -uo pipefail
 DOTFILES="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -48,12 +48,26 @@ for key in ("enabledPlugins", "extraKnownMarketplaces"):
 ' "$dir/settings.json" "$dir" "$name")
 done
 
-# 2. Uncommitted drift in the shared config — the harness writes through the symlinks.
-# claude/CLAUDE.md is generated and gitignored, so it is checked by re-composition
-# below rather than by git; its SOURCES are what can drift uncommitted.
-if ! git -C "$DOTFILES" diff --quiet -- claude/settings.json claude/accounts \
-     shared/instructions claude/instructions codex/instructions; then
-  issues+=("uncommitted changes in shared config — review: git -C $DOTFILES diff claude/ shared/instructions")
+# 2. The live copy is exactly a commit: no tracked edits (the harness writes through
+# the account links into it), on origin/main unless deliberately pinned, and no
+# account still reading the dev checkout. See docs/specs/2026-10-07-live-deploy.md.
+if [[ -n "$(git -C "$DOTFILES" status --porcelain --untracked-files=no)" ]]; then
+  issues+=("tracked changes in $DOTFILES — review: git -C $DOTFILES diff")
+fi
+if dev="$(git -C "$DOTFILES" remote get-url dev 2>/dev/null)"; then
+  dev="$(cd "$dev" 2>/dev/null && pwd -P || printf '%s' "$dev")"   # realpath below is physical
+  if [[ -f "$DOTFILES/.git/live-pin" ]]; then
+    issues+=("live copy pinned to $(cat "$DOTFILES/.git/live-pin") — ./setup.sh deploy in your checkout returns it to main")
+  elif ! git -C "$DOTFILES" fetch -q origin main 2>/dev/null; then
+    issues+=("could not fetch origin to check the live copy is current (offline, or no GitHub credentials here)")
+  elif [[ "$(git -C "$DOTFILES" rev-parse HEAD)" != "$(git -C "$DOTFILES" rev-parse FETCH_HEAD)" ]]; then
+    issues+=("live copy is not at origin/main — git pull on main in your checkout, or ./setup.sh deploy")
+  fi
+  for link in "$HOME"/.claude*/CLAUDE.md "$HOME"/.claude*/skills/* "$HOME"/.claude*/agents/* \
+              "$HOME"/.agents/skills/* "$HOME"/.local/bin/*; do
+    [[ -L "$link" ]] || continue
+    case "$(realpath "$link" 2>/dev/null)" in "$dev"/*) issues+=("$link still reads the dev checkout — ./setup.sh --from config") ;; esac
+  done
 fi
 
 # 2b. The generated CLAUDE.md still matches its sources. The harness writes
@@ -108,7 +122,7 @@ done < <(python3 "$DOTFILES/tools/model-check.py" "$HOME" "$DOTFILES" 2>&1 || ec
 
 if (( ${#issues[@]} )); then
   printf '%s\n' "${issues[@]}"
-  osascript -e "display notification \"${#issues[@]} issue(s) — see /tmp/claude-fleet-health.log\" with title \"Claude fleet drift\"" 2>/dev/null
+  osascript -e "display notification \"${#issues[@]} issue(s) — see ~/Library/Logs/claude-fleet-health.log\" with title \"Claude fleet drift\"" 2>/dev/null
   exit 1
 fi
 echo "fleet healthy: $(date '+%Y-%m-%d %H:%M')"

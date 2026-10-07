@@ -27,9 +27,17 @@ Usage: ./setup.sh [step ...] [options]
   ./setup.sh accounts config      run several (always in order, never twice)
   ./setup.sh --from config        run that step and everything after it
   ./setup.sh --list               show the steps and what each one does
+  ./setup.sh deploy               point every account at origin/main (and unpin)
+  ./setup.sh deploy --working-tree
+                                  point every account at this checkout's tracked
+                                  files as they are now, pinned until the next deploy
   -h, --help                      this message
 
 Steps: $(step_names)
+
+Accounts never read this checkout. They read the live copy at
+$LIVE, which a pull on main redeploys. Run from
+this checkout, a step deploys first (unless pinned), then runs from the live copy.
 EOF
 }
 
@@ -56,15 +64,23 @@ resolve() {
   return 1
 }
 
+# Live sessions read a deployed clone, never a working tree (docs/specs/2026-10-07-live-deploy.md).
+LIVE="$HOME/.local/share/agent-bootstrap/live"
+is_live() { [[ "$(cd "$DOTFILES" && pwd -P)" == "$(cd "$LIVE" 2>/dev/null && pwd -P)" ]]; }
+
 run_step() { log "$(step_name "$1") — $(step_desc "$1")"; bash "$1"; }
 
 main() {
-  local mode="all"
-  local -a tokens=()
+  local mode="all" deploy=0 working_tree=0
+  local -a tokens=() passthrough=()
 
+  local a
+  for a in "$@"; do [[ "$a" == deploy || "$a" == --working-tree ]] || passthrough+=("$a"); done
   while (( $# )); do
     case "$1" in
       -h|--help) usage; exit 0 ;;
+      deploy)    deploy=1; shift; continue ;;
+      --working-tree) working_tree=1; shift; continue ;;
       --list)    list_steps; exit 0 ;;
       --from)
         [[ -n "${2:-}" ]] || { err "--from needs a step name (e.g. --from config)"; exit 1; }
@@ -76,6 +92,24 @@ main() {
       *)  mode="only"; tokens+=("$1"); shift ;;
     esac
   done
+
+  if (( working_tree && ! deploy )); then err "--working-tree goes with deploy: ./setup.sh deploy --working-tree"; exit 1; fi
+  if is_live; then
+    (( ! deploy )) || { err "deploy runs from your checkout, not the live copy"; exit 1; }
+  else
+    local -a flag=(); (( working_tree )) && flag=(--working-tree)
+    (( deploy && ! ${#passthrough[@]} )) || flag+=(--no-relink)   # steps follow: they link
+    if (( deploy )); then
+      bash "$DOTFILES/tools/deploy-live.sh" ${flag[@]+"${flag[@]}"}
+      (( ${#passthrough[@]} )) || exit 0
+    elif [[ -f "$LIVE/.git/live-pin" ]]; then
+      warn "live is pinned to $(cat "$LIVE/.git/live-pin"); not redeploying. ./setup.sh deploy returns it to main"
+    else
+      bash "$DOTFILES/tools/deploy-live.sh" ${flag[@]+"${flag[@]}"}
+    fi
+    # cd too: the generators read their sources from the working directory.
+    cd "$LIVE" && exec "$LIVE/setup.sh" ${passthrough[@]+"${passthrough[@]}"}
+  fi
 
   local -a run=()
   local p t start seen=0
