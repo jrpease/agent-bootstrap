@@ -35,7 +35,7 @@ is not one (`moves.md` §E, the capability rule).
 | Step | Tool | Notes |
 |---|---|---|
 | **Stills** | `studio-gen image` | Art-direct from `DESIGN.md` `Material`. **Plan the key now** (§6): a subject on a plain, keyable ground |
-| **Film** | `studio-gen video --model seedance --seconds 10` | Text-to-video today — describe the still in the prompt. Veo takes only 4, 6 or 8 seconds. Or render the move in Blender (`three-d.md`, rung 2); the rest is identical |
+| **Film** | `studio-gen video "<the move>" --from <still> --seconds 10` | Animates the still itself, so the approved composition holds; the prompt describes only the motion. Lengths: Seedance 4–15, Kling 3–15, Veo 4, 6 or 8. The still sets the shape: for a phone tier, make a 9:16 still. Or render the move in Blender (`three-d.md`, rung 2); the rest is identical |
 | **Cut** | `reference/sequence-cut.sh <video> <out> 12` | 10s at 12fps = 120 frames; WebP tiers 768 and 1440 plus `manifest.json` |
 | **Host** | The project's static folder | Long immutable caching; bump the `?r=` revision on every re-cut |
 
@@ -47,16 +47,17 @@ reference/sequence-cut.sh films/hero.mp4 public/films/hero 12 "768 1440" 72
 ### Keyframed film — a start frame, an end frame, the model fills the middle
 
 The common way to stage a change now: make the **first** and **last** frame, and let a video model
-that accepts both (Veo in Google Flow, Kling, Seedance) generate the move between them. Apple's
+that accepts both (Seedance, Kling, Veo) generate the move between them. Apple's
 dissection scrolls are not made this way — they are 3D renders, delivered as scrubbed video;
 render the move yourself and it is the Blender path (`three-d.md`, rung 2).
 
 1. **Start frame** — generate it (`studio-gen image`), art-directed like any still.
-2. **End frame** — **edit the start frame into it** (an image-edit model: Flow, Gemini), never
-   generate it fresh. Same object, camera, light and ground; only the state changes — assembled
+2. **End frame** — **edit the start frame into it** (`studio-gen image "<the change>" --edit
+   start.webp`), never generate it fresh. Same object, camera, light and ground; only the state changes — assembled
    to separated, closed to open. Two independent generations are two different objects, and the
    model morphs one into the other.
-3. **Fill the middle** — a first-and-last-frame video model, 4–10 seconds. Keep the camera
+3. **Fill the middle** — `studio-gen video "<the move>" --from start.webp --to end.webp`, 4–10
+   seconds (Veo: 8 only). Keep the camera
    locked or on one simple move; a camera move *and* a transformation doubles what it invents.
 4. **Cut** with `reference/sequence-cut.sh` — no GIF tools in between; GIF throws away colour and
    saves nothing.
@@ -76,11 +77,15 @@ cut rate (`fps=12,tile=8x8` for up to five seconds) — a one-frame pop hides be
 On an exact product, any of those means the generated film is the wrong asset: render the move in
 Blender instead. On a soft subject — fabric, food, landscape — the same drift reads as motion.
 
-**Today the pair and the fill happen outside this toolchain** — studio-gen cannot edit an image
-or take keyframes yet. That makes it a stop (`SKILL.md`, stop 4): name the two keyframes,
-the edit and the video model the client should run, and wait for the film. Unattended, record it
-as an assumption and build against the two keyframes as posters. The film is a sourced piece:
-record it on `DESIGN.md`'s `Sourced:` line with both keyframes kept beside it.
+```bash
+studio-gen image "brushed titanium watch, closed, on seamless grey" --out public/gen/watch
+studio-gen image "the same watch with its case back open, movement visible" \
+  --edit public/gen/watch/asset@2x.webp --out public/gen/watch-open
+studio-gen video "the case back swings open, camera locked" --seconds 8 \
+  --from public/gen/watch/asset@2x.webp --to public/gen/watch-open/asset@2x.webp --out films/watch
+```
+
+Keep both keyframes beside the film: they are what step 5 compares against.
 
 **The capability rule still holds** (`moves.md` §E): this qualifies for a transformation because
 it is one continuous film of the change, not a cross-fade — but the shared geometry is the model's

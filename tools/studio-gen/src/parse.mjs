@@ -7,7 +7,10 @@ export function parse(argv) {
     options: {
       model:     { type: 'string' },
       out:       { type: 'string' },
-      ratio:     { type: 'string', default: '16:9' },
+      ratio:     { type: 'string' },   // no default: resolve.mjs picks one per command
+      edit:      { type: 'string' },
+      from:      { type: 'string' },
+      to:        { type: 'string' },
       seconds:   { type: 'string', default: '8' },
       fps:       { type: 'string', default: '30' },
       frames:    { type: 'boolean', default: false },
@@ -23,6 +26,9 @@ export function parse(argv) {
     model: values.model,
     out: values.out,
     ratio: values.ratio,
+    edit: values.edit,
+    from: values.from,
+    to: values.to,
     seconds: Number(values.seconds),
     fps: Number(values.fps),
     frames: values.frames,

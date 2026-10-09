@@ -4,6 +4,7 @@ import { resolveKey } from './keys.mjs'
 import { accountOrThrow } from './account.mjs'
 import { geminiImage } from './adapters/gemini.mjs'
 import { openaiImage } from './adapters/openai.mjs'
+import { editPng } from './inputs.mjs'
 
 export async function runImage(req) {
   const { account, source: accountSource } = accountOrThrow()
@@ -11,9 +12,10 @@ export async function runImage(req) {
   if (warning) console.error(warning)
   console.error(notice)
 
+  const source = req.params.edit ? await editPng(req.params.edit) : undefined
   const png = req.provider === 'openai'
-    ? await openaiImage({ apiKey, modelId: req.modelId, prompt: req.prompt, ratio: req.params.ratio, cutout: req.params.cutout })
-    : await geminiImage({ apiKey, modelId: req.modelId, prompt: req.prompt, ratio: req.params.ratio })
+    ? await openaiImage({ apiKey, modelId: req.modelId, prompt: req.prompt, ratio: req.params.ratio, cutout: req.params.cutout, source })
+    : await geminiImage({ apiKey, modelId: req.modelId, prompt: req.prompt, ratio: req.params.ratio, source })
 
   mkdirSync(req.out, { recursive: true })
   const base = `${req.out}/asset`

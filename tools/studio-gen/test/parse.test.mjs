@@ -21,7 +21,7 @@ test('parses video with numeric seconds/fps and boolean frames/dry-run', () => {
 
 test('applies defaults', () => {
   const p = parse(['image', 'x'])
-  assert.equal(p.ratio, '16:9')
+  assert.equal(p.ratio, undefined)   // resolve.mjs picks the default per command
   assert.equal(p.seconds, 8)
   assert.equal(p.fps, 30)
   assert.equal(p.frames, false)

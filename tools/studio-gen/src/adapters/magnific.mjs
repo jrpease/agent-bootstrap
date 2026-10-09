@@ -4,12 +4,19 @@
 // so the route supplies both.
 const BASE = 'https://api.magnific.com/v1/ai'
 
-export async function magnificVideo({ apiKey, modelId, prompt, seconds, fetchImpl = fetch, pollMs = 5000, timeoutMs = 15 * 60 * 1000 }) {
-  const { create, poll, durationAs } = modelId
+//
+// A route's `ratios` maps --ratio to the model's own names (Seedance's enum); without it
+// the ratio goes as given. Frames go as base64 in `image` / `image_end`, which only
+// Seedance documents; pickProvider keeps image requests for other models on fal.
+export async function magnificVideo({ apiKey, modelId, prompt, seconds, ratio, start, end, fetchImpl = fetch, pollMs = 5000, timeoutMs = 15 * 60 * 1000 }) {
+  const { create, poll, durationAs, ratios } = modelId
   const headers = { 'x-magnific-api-key': apiKey, 'content-type': 'application/json' }
-  const duration = durationAs === 'string' ? String(seconds) : seconds
+  const body = { prompt, duration: durationAs === 'string' ? String(seconds) : seconds }
+  if (ratio) body.aspect_ratio = ratios?.[ratio] ?? ratio
+  if (start) body.image = start.bytes.toString('base64')
+  if (end) body.image_end = end.bytes.toString('base64')
 
-  const started = await call(fetchImpl, `${BASE}/${create}`, { method: 'POST', headers, body: JSON.stringify({ prompt, duration }) })
+  const started = await call(fetchImpl, `${BASE}/${create}`, { method: 'POST', headers, body: JSON.stringify(body) })
   const taskId = started.data?.task_id
   if (!taskId) throw new Error(`magnific returned no task_id: ${JSON.stringify(started)}`)
 

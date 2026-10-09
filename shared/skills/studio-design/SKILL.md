@@ -77,8 +77,7 @@ notifications — do not proceed on an assumption about what the answer would ha
 3. **Any floor override** — a floor may only be overridden with the client's agreement, or, when
    nobody is reachable, with the override recorded as an assumption.
 4. **A client-made asset the tools cannot make** — a Spline export (the Spline MCP cannot export;
-   `three-d.md` §5) or a keyframed film made outside studio-gen (`sequence.md` §2). Name exactly
-   what the client should make.
+   `three-d.md` §5). Name exactly what the client should make.
 
 Unattended runs proceed through all four and record each as an assumption in `DESIGN.md`. A run
 that had a client and did not stop has skipped a step, not saved one.
