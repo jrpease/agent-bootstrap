@@ -44,6 +44,20 @@ reference/sequence-cut.sh films/hero.mp4 public/films/hero 12            # tiers
 reference/sequence-cut.sh films/hero.mp4 public/films/hero 12 "768 1440" 72
 ```
 
+**Direct the film in what it obeys.** Seedance 2.0 through fal, measured on one run (2026-10-01):
+
+- **Composition and a held framing land; camera moves don't.** "Centred in the upper two-thirds,
+  lower third empty" and "medium close-up, never a wide shot" came back as asked. "One slow
+  dolly-out" barely moved, or swung wide and lost the subject. Don't ask the film for a move you
+  need: hold its camera, and make the dolly or zoom a scale uniform in the §5 shader — that run
+  pulled back 1.35× → 1×.
+- **Anatomy can't be directed in the film prompt.** "No nose and no mouth" came back as a face, and so did the positive
+  rewrite, "a smooth, blank, eggshell surface". Settle anatomy in the still; the film only moves it.
+- **Name continuity, and move what is already in frame.** A two-beat ending — "the door opens… the
+  creature's eyes open" — grew a second head out of a side hatch. Write "the same creature's eyes".
+- **15 seconds works** (`--seconds 15`): room for four or five beats, and at 12fps 180 frames,
+  inside the budget below.
+
 ### Keyframed film — a start frame, an end frame, the model fills the middle
 
 The common way to stage a change now: make the **first** and **last** frame, and let a video model
@@ -58,7 +72,7 @@ render the move yourself and it is the Blender path (`three-d.md`, rung 2).
    model morphs one into the other.
 3. **Fill the middle** — `studio-gen video "<the move>" --from start.webp --to end.webp`, 4–10
    seconds (Veo: 8 only). Keep the camera
-   locked or on one simple move; a camera move *and* a transformation doubles what it invents.
+   locked (Seedance barely obeys camera moves — the notes above); a camera move *and* a transformation doubles what it invents.
 4. **Cut** with `reference/sequence-cut.sh` — no GIF tools in between; GIF throws away colour and
    saves nothing.
 5. **Read the in-betweens** before building anything — 19 evenly spaced moments on one sheet, and

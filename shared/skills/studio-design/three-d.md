@@ -41,6 +41,11 @@ wired, `3d_run_code` means Spline's is. Blender's tools also need Blender open w
 running; Spline's need the Spline editor open. A server that lists its tools but cannot reach its
 app is an unavailable capability — say so at Intake rather than discovering it at Build.
 
+Connected is not able to generate. Spline's `3d_generate_*` tools spend Spline AI credits, and no
+tool reads the balance. Note it at Inspect; the question rides on Intake's asset question (SKILL.md)
+when the answer is "generate" and Spline would do it. No credits means Spline is for authoring only, and 3D sourcing goes to Blender or a bought
+model (§6).
+
 ---
 
 ## 3 · Driving Blender
@@ -106,8 +111,15 @@ poster placeholder.
 ## 6 · Generated and sourced models
 
 - **Generate only when `DESIGN.md` says the material is generated** — Intake decides that, not the
-  tool list. Spline's `3d_generate_image` and `3d_generate_3d_model` spend Spline credits; check the
-  account's plan before relying on them.
+  tool list. Spline's `3d_generate_image` and `3d_generate_3d_model` spend Spline credits — the
+  answer from Inspect (§2) governs. Three traps, all from one run (2026-10-01):
+  - **`3d_generate_3d_model` needs an `asset_id`, and a dropped-in image has none** — it is
+    embedded in a material, and the call fails with `No readable image asset`. Spline's own
+    `3d_generate_image` (`for_3d: true`) makes one; if the source image matters, make it there.
+  - **Zero credits hangs instead of failing** — `generating images · Ns` for minutes, no error. If a
+    generation passes about 3 minutes, stop polling and check credits.
+  - **Jobs die with the editor tab.** After a reload, `3d_get_generation` returns
+    `Unknown job_id`; that is the reload, not a new bug.
 - **Text-to-3D is worst at precise mechanical objects** — primitives or a bought model for those
   (`moves.md` §E, the fidelity ladder).
 - **Every sourced or generated model carries its origin and licence** next to `Material` in

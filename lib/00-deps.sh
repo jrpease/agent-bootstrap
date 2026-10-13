@@ -136,15 +136,29 @@ fi
 #
 # NEVER run `brew uninstall --zap --cask codex`: the cask's zap stanza is
 # `rmdir ~/.codex`, which takes auth, sessions, memories, skills and rules.
+#
+# Back up execpolicy rules before any install or upgrade: the one-shot
+# ~/.codex/.sandbox_migration marker makes a newer binary strip legacy allow
+# rules from default.rules.
+backup_codex_rules() {
+  [[ -d "$HOME/.codex/rules" ]] || return 0
+  local bk="$DOTFILES/tmp/codex-rules-$(date +%Y%m%d-%H%M%S)"
+  mkdir -p "$bk" && cp -R "$HOME/.codex/rules/." "$bk/" && ok "backed up ~/.codex/rules -> $bk"
+}
+# Upgrade, not just install: a new default model can need a newer CLI ("requires
+# a newer version of Codex"), and nothing else ever moves a machine off the
+# version it first got. The cask is not auto_updates, so `brew outdated`
+# sees it without --greedy. Only the cask is upgraded; an npm copy is not touched.
+if have_cmd codex && brew list --cask codex >/dev/null 2>&1 \
+   && [[ -n "$(brew outdated --cask --quiet codex 2>/dev/null)" ]]; then
+  backup_codex_rules
+  log "Upgrading Codex CLI ($(codex --version 2>/dev/null))"
+  brew upgrade --cask codex || warn "brew upgrade --cask codex failed — Codex may be too old for its configured model"
+fi
 if have_cmd codex; then
   ok "Codex CLI present ($(codex --version 2>/dev/null || echo 'BROKEN — see below'))"
 else
-  # Back up execpolicy rules first: the one-shot ~/.codex/.sandbox_migration
-  # marker makes a newer binary strip legacy allow rules from default.rules.
-  if [[ -d "$HOME/.codex/rules" ]]; then
-    bk="$DOTFILES/tmp/codex-rules-$(date +%Y%m%d-%H%M%S)"
-    mkdir -p "$bk" && cp -R "$HOME/.codex/rules/." "$bk/" && ok "backed up ~/.codex/rules -> $bk"
-  fi
+  backup_codex_rules
   if npm ls -g @openai/codex --depth=0 >/dev/null 2>&1; then
     log "Removing npm-installed codex (the cask wants the same path)"
     npm uninstall -g @openai/codex

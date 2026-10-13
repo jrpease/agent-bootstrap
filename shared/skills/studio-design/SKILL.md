@@ -27,14 +27,14 @@ build the page. Judge the result against real work, not against your own brief.
 **1 · Inspect.** Read the repo: routing, styling, animation libs, existing tokens, committed
 typefaces, brand assets, **existing photography** (the highest-value find), a reachable live site.
 Then check what this environment can produce: `studio-gen` on `PATH`, a browser driver, the
-Blender and Spline MCP tools (`three-d.md` §2), and the vgpu, Magic UI and Mobbin MCP tools
-(`sources.md`).
+Blender and Spline MCP tools (`three-d.md` §2 — no tool reads Spline's AI credit balance), and the vgpu, Magic UI and Mobbin MCP tools (`sources.md`).
 An uninventoried capability is an unavailable one.
 
 **2 · Intake.** Ask three questions and nothing else. *What should this feel like — is there a
 concept or reference already in your head?* *If a design system exists — work inside it, extend it,
-or depart?* *Will you supply visual assets, or should we generate them?* Skip any the request
-already answered.
+or depart?* *Will you supply visual assets, or should we generate them?* If generating, and Spline is the
+generator, that question carries a rider: does the account have Spline AI credits? Skip any the
+request already answered.
 
 Separate the client's **adjectives** (binding — the feeling they are owed) from their **nouns**. A
 noun they *direct* ("make it a field guide") is the concept and is binding. A noun they *mention*

@@ -135,6 +135,32 @@ while IFS=$'\t' read -r kind msg; do
     *)      [[ -n "$kind" ]] && issues+=("pins: $kind $msg") ;;
   esac
 done < <(python3 "$DOTFILES/tools/pin-check.py" "$DOTFILES" 2>&1 || echo "pins: tools/pin-check.py failed to run")
+
+# 7. Codex can run its model. Check 5 reads Codex's model list, which says what
+# exists, not what this CLI can run — an old Codex refuses a new model with
+# "requires a newer version of Codex". A current cask runs anything it
+# lists, so a live call is only made when brew says the cask is behind. Only
+# "requires a newer version" is drift; anything else (auth, offline, rate limit,
+# timeout) leaves the quiet update notice and logs why the call failed, since
+# upgrading wouldn't fix it. stdin closed (codex exec waits on it otherwise),
+# and perl's alarm stands in for the timeout(1) macOS lacks. The model is the
+# top-level key: TOML puts those before the first [table].
+# brew outdated exits 1 exactly when something is outdated, so test its output.
+behind="$(command -v codex >/dev/null && brew outdated --cask --verbose codex 2>/dev/null)"
+if [[ -n "$behind" ]]; then
+  model="$(sed -n '/^\[/q; s/^model *= *"\([^"]*\)".*/\1/p' "$HOME/.codex/config.toml" 2>/dev/null | head -1)"
+  out="$(cd "${TMPDIR:-/tmp}" && perl -e 'alarm shift; exec @ARGV' 120 \
+        codex exec --skip-git-repo-check -s read-only ${model:+-m "$model"} "Reply with the single word ok." </dev/null 2>&1)"
+  rc=$?
+  if (( rc )) && grep -qi 'newer version' <<<"$out"; then
+    issues+=("codex: '${model:-default}' needs a newer Codex ($behind) — run ./setup.sh deps")
+  else
+    (( rc )) && echo "codex: test call failed (rc $rc), not a version problem: $(grep -i 'error' <<<"$out" | grep -v rmcp | tail -1)"
+    msg="codex: $behind — ./setup.sh deps upgrades it"
+    updates+=("$msg"); grep -qxF "$msg" "$seen" 2>/dev/null || fresh=$((fresh + 1))
+  fi
+fi
+
 if (( ${#updates[@]} )); then
   printf 'update available: %s\n' "${updates[@]}"
   mkdir -p "$(dirname "$seen")"; printf '%s\n' "${updates[@]}" > "$seen"
