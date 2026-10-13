@@ -153,5 +153,92 @@ class PinCheck(Temp):
         self.assertEqual(kinds, ["drift", "drift"])
 
 
+class Watch(Temp):
+    # Invented names only: the public export rejects real team and domain names.
+    NOW = "2026-03-20T12:00:00Z"
+    DAY = 86400000
+
+    def site(self, name, status, serving_ms=100 * DAY, deploy=None):
+        url = "https://%s.example.com" % name
+        p = {"id": "prj_" + name, "name": name,
+             "targets": {"production": {"alias": [name + ".example.com"], "createdAt": serving_ms}}}
+        f = {"projects": [p], "http": {url: status}, "deploys": {}}
+        if deploy:
+            f["deploys"]["prj_" + name] = deploy
+        return f
+
+    def pr(self, **kw):
+        pr = {"repository": {"name": "widget", "nameWithOwner": "someone/widget"}, "number": 7,
+              "isDraft": False, "updatedAt": "2026-03-19T00:00:00Z", "mergeable": "MERGEABLE",
+              "reviewDecision": "", "statusCheckRollup": []}
+        pr.update(kw)
+        return pr
+
+    def watch(self, fixture, seen="seen"):
+        fixture.setdefault("now", self.NOW)
+        r = run("watch.py", "--fixture", self.write("f.json", fixture), "--seen", os.path.join(self.dir, seen))
+        self.new = int(r.stderr.split("new: ")[1]) if "new: " in r.stderr else None
+        lines = r.stdout.splitlines()
+        return r.returncode, lines[1:] if r.returncode else lines   # drop the dated header
+
+    def test_clean(self):
+        rc, out = self.watch({**self.site("acme", 200), "prs": [self.pr()]})
+        self.assertEqual(rc, 0)
+        self.assertTrue(out[0].startswith("watch clean"))
+
+    def test_site_not_serving(self):
+        rc, out = self.watch(self.site("acme", {"status": 404, "vercel_error": "NOT_FOUND"}))
+        self.assertEqual((rc, out), (1, ["site acme: https://acme.example.com answers 404 (NOT_FOUND)"]))
+        _, out = self.watch(self.site("acme", "Could not resolve host"))
+        self.assertEqual(out, ["site acme: https://acme.example.com does not answer (Could not resolve host)"])
+
+    def test_failed_deploy_only_when_newer(self):
+        newer = {"readyState": "ERROR", "createdAt": 101 * self.DAY}
+        _, out = self.watch(self.site("acme", 200, deploy=newer))
+        self.assertEqual(len(out), 1)
+        self.assertIn("last production deploy ERROR", out[0])
+        _, out = self.watch(self.site("acme", 200, deploy={"state": "CANCELED", "createdAt": 101 * self.DAY}))
+        self.assertIn("last production deploy CANCELED", out[0])
+        older = {"readyState": "ERROR", "createdAt": 99 * self.DAY}
+        rc, _ = self.watch(self.site("acme", 200, deploy=older))
+        self.assertEqual(rc, 0)
+
+    def test_never_deployed_project_is_skipped(self):
+        rc, _ = self.watch({"projects": [{"id": "prj_x", "name": "x", "targets": {}}]})
+        self.assertEqual(rc, 0)
+
+    def test_pr_signals(self):
+        checks = [{"__typename": "CheckRun", "name": "unit", "conclusion": "FAILURE"},
+                  {"__typename": "StatusContext", "context": "deploy", "state": "ERROR"},
+                  {"__typename": "CheckRun", "name": "lint", "conclusion": "SUCCESS"}]
+        _, out = self.watch({"prs": [self.pr(statusCheckRollup=checks, mergeable="CONFLICTING",
+                                             reviewDecision="CHANGES_REQUESTED", updatedAt="2026-03-01T00:00:00Z")]})
+        self.assertEqual(out, ["pr widget#7: failing checks (deploy, unit)", "pr widget#7: merge conflict",
+                               "pr widget#7: changes requested", "pr widget#7: idle since 2026-03-01"])
+
+    def test_quiet_pr_states(self):
+        rc, _ = self.watch({"prs": [self.pr(mergeable="UNKNOWN"),
+                                    self.pr(number=8, isDraft=True, updatedAt="2026-01-01T00:00:00Z")]})
+        self.assertEqual(rc, 0)
+
+    def test_seen_file_holds_the_run_and_survives_a_failed_gather(self):
+        bad = self.site("acme", 500)
+        self.watch(bad)
+        self.assertEqual(self.new, 1)
+        self.watch(bad)
+        self.assertEqual(self.new, 0)   # a repeat run notifies nothing
+        with open(os.path.join(self.dir, "seen")) as f:
+            self.assertEqual(f.read(), "site acme: https://acme.example.com answers 500\n")
+        # Vercel unreadable next run: the old site line is kept, not dropped.
+        self.watch({"errors": [["site", "watch: could not read Vercel teams (offline)"]]})
+        with open(os.path.join(self.dir, "seen")) as f:
+            self.assertEqual(f.read().splitlines(), ["watch: could not read Vercel teams (offline)",
+                                                     "site acme: https://acme.example.com answers 500"])
+        # One project's deployments miss is not a failed site read: nothing is held over.
+        self.watch({"errors": [["deploy", "watch: could not read acme deployments (timeout)"]]})
+        with open(os.path.join(self.dir, "seen")) as f:
+            self.assertEqual(f.read().splitlines(), ["watch: could not read acme deployments (timeout)"])
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -112,6 +112,7 @@ check "the merged MEMORY.md kept both notes" bash -c "grep -q 'from .claude]' '$
 check "~/.zshrc sources the repo zshrc" grep -qF "$REPO/zshrc" "$H/.zshrc"
 check "codex AGENTS.md generated" test -s "$H/.codex/AGENTS.md"
 check "fleet-health plist written" test -f "$H/Library/LaunchAgents/agent-bootstrap.fleet-health.plist"
+check "watch plist written" plutil -lint "$H/Library/LaunchAgents/agent-bootstrap.watch.plist"
 check "second run changed nothing" cmp -s "$OUT/first.snap" "$OUT/second.snap"
 if ! cmp -s "$OUT/first.snap" "$OUT/second.snap"; then
   diff "$OUT/first.snap" "$OUT/second.snap" | sed 's/^/        /' | head -20
