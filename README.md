@@ -35,7 +35,7 @@ rather than your own brief, and prove the thing runs before calling it done.
 products — type contrast, spacing steps, component reuse ratios — so "make it
 good" has numbers behind it.
 
-**`lib/`** — eleven ordered, idempotent setup steps, each one a file. Re-running
+**`lib/`** — thirteen ordered, idempotent setup steps, each one a file. Re-running
 is safe. Read "Before you run it" below before the first run.
 
 ## How the projection works
@@ -68,7 +68,7 @@ would ship as literal text.
 
 | Step | Purpose |
 |------|---------|
-| `deps` | Homebrew, Oh My Zsh, Node, Claude CLI, Codex CLI, gh, lastpass-cli, ffmpeg |
+| `deps` | Homebrew, Oh My Zsh, Node, uv, Claude CLI, Codex CLI, gh, lastpass-cli, ffmpeg |
 | `accounts` | Named Claude accounts and Codex homes, aliases, the default |
 | `desktop-app` | Point the Dock-launched Claude app at the default account |
 | `config` | Generate `CLAUDE.md`, per-account `settings.json`, Codex `AGENTS.md` and roles |
@@ -76,9 +76,18 @@ would ship as literal text.
 | `skills` | Marketplaces, plugins, vendored skills, `npx skills` sources |
 | `git` | git identity, GitHub auth, optional SSH key |
 | `studio-gen` | The image/video CLI, plus ffmpeg |
+| `blender` | Install the official Blender MCP server (pinned) and its Blender add-on |
 | `secrets` | Scaffold `~/.zshrc.local` and wire it into `~/.zshrc` |
 | `mcp` | Register local MCP servers in every account |
 | `verify` | Health-check summary |
+| `health` | Schedule the weekly fleet-health drift check and the daily watch |
+
+**Two scheduled checks.** `tools/fleet-health.sh` runs Mondays at 09:00 and checks this
+machine's accounts for drift. `tools/watch.py` runs daily at 09:00 and checks what lives
+elsewhere: every Vercel site the CLI can see that doesn't answer, sends visitors to the
+Vercel login, or whose last production deploy failed, and open PRs in your own repos with failing checks, a conflict, changes
+requested, or no activity for a week. Both are silent when clean; watch notifies only for
+findings it hasn't seen before, and logs every one to `~/Library/Logs/claude-watch.log`.
 
 `accounts` is the only interactive step, and it aborts when stdin isn't a
 terminal — so a bare `./setup.sh` fails inside an agent session, on purpose.
@@ -91,6 +100,12 @@ and `~/.zprofile`, and symlinks config into `~/.claude*/`. Appends are
 marker-based and idempotent, and existing real files are backed up to `.bak`
 before being replaced.
 
+Two steps reach past that. `blender` clones the Blender MCP server into
+`~/.local/share/`, installs its add-on into Blender, and turns on Blender's *Allow
+Online Access* preference, which the add-on needs to start. `health` writes and loads
+two LaunchAgents in `~/Library/LaunchAgents/`. The daily one runs your `gh` and
+`vercel` CLIs every morning, signed in as you, to read deploy and PR state. It changes nothing.
+
 **Read this part if you already use Claude Code.** `config` *generates*
 `~/.claude*/settings.json` rather than merging into it. Only `autoMode` carries
 over from your existing file — your `hooks`, `env`, `model`, and your own
@@ -100,7 +115,7 @@ my config and not yours. Diff the two afterward and merge back what you want.
 Two other steps also delete without prompting: `skills` prunes stale mirror
 symlinks, and `memory` moves memory files between accounts.
 
-Read `lib/` first. It's ~1,400 lines, and it is touching your `$HOME`.
+Read `lib/` first. It's ~1,600 lines, and it is touching your `$HOME`.
 
 Run one step at a time if you'd rather. `./setup.sh config` alone gets you the
 instruction/skill projection, and that is the part most people actually want.
