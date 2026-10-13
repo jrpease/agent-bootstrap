@@ -191,6 +191,8 @@ class Watch(Temp):
         self.assertEqual((rc, out), (1, ["site acme: https://acme.example.com answers 404 (NOT_FOUND)"]))
         _, out = self.watch(self.site("acme", "Could not resolve host"))
         self.assertEqual(out, ["site acme: https://acme.example.com does not answer (Could not resolve host)"])
+        _, out = self.watch(self.site("acme", {"status": 200, "login": True}))
+        self.assertEqual(out, ["site acme: https://acme.example.com redirects to the Vercel login"])
 
     def test_failed_deploy_only_when_newer(self):
         newer = {"readyState": "ERROR", "createdAt": 101 * self.DAY}

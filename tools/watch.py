@@ -50,14 +50,16 @@ def fetch(url):
     # Homebrew Python may have no CA bundle and would fail every site on TLS.
     try:
         p = subprocess.run(["curl", "-sS", "-o", "/dev/null", "-L", "-m", "20", "-A", "Mozilla/5.0 (watch)",
-                            "-w", "%{http_code} %header{x-vercel-error}", url],
+                            "-w", "%{http_code} %{url_effective} %header{x-vercel-error}", url],
                            capture_output=True, text=True, timeout=30)
     except (OSError, subprocess.TimeoutExpired) as e:
         return {"error": str(e)}
     if p.returncode:
         return {"error": (p.stderr.strip().splitlines() or ["curl exit %d" % p.returncode])[0]}
-    status, _, verr = p.stdout.partition(" ")
-    return {"status": int(status), "vercel_error": verr.strip() or None}
+    status, final, verr = (p.stdout + "  ").split(" ", 2)
+    # Vercel Authentication redirects to its login page, which answers 200.
+    login = final.startswith(("https://vercel.com/login", "https://vercel.com/sso-api"))
+    return {"status": int(status), "vercel_error": verr.strip() or None, "login": login}
 
 
 def gather_deploys(data):
@@ -132,6 +134,8 @@ def site_findings(data):
             r = {"error": r}
         if r and r.get("error"):
             out.append("site %s: %s does not answer (%s)" % (name, url, r["error"]))
+        elif r and r.get("login"):
+            out.append("site %s: %s redirects to the Vercel login" % (name, url))
         elif r and r.get("status", 0) >= 400:
             why = " (%s)" % r["vercel_error"] if r.get("vercel_error") else ""
             out.append("site %s: %s answers %s%s" % (name, url, r["status"], why))
