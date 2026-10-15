@@ -68,7 +68,7 @@ would ship as literal text.
 
 | Step | Purpose |
 |------|---------|
-| `deps` | Homebrew, Oh My Zsh, Node, uv, Claude CLI, Codex CLI, gh, lastpass-cli, ffmpeg |
+| `deps` | Homebrew, Oh My Zsh, Node, uv, bun, Claude CLI, Codex CLI, gh, lastpass-cli, ffmpeg |
 | `accounts` | Named Claude accounts and Codex homes, aliases, the default |
 | `desktop-app` | Point the Dock-launched Claude app at the default account |
 | `config` | Generate `CLAUDE.md`, per-account `settings.json`, Codex `AGENTS.md` and roles |

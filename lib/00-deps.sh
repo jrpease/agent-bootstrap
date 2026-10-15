@@ -60,6 +60,10 @@ else log "Installing webp"; brew install webp; fi
 if have_cmd uv; then ok "uv present"
 else log "Installing uv"; brew install uv; fi
 
+# bun (the vercel plugin's packages need it — see the skills step)
+if have_cmd bun; then ok "bun present"
+else log "Installing bun"; brew install bun; fi
+
 # lastpass-cli (studio-gen reads per-account API keys from the vault)
 if have_cmd lpass; then ok "lastpass-cli present"
 else log "Installing lastpass-cli"; brew install lastpass-cli; fi
