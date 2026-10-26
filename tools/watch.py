@@ -10,12 +10,15 @@ site doesn't notify every morning. See docs/specs/2026-10-13-watch.md.
 
 --fixture replaces the network: {"projects": [...], "deploys": {projectId:
 deployment}, "http": {url: status | "error" | {...}}, "prs": [...], "errors":
-[[kind, line], ...], "now": "ISO time"}, raw API objects as returned. With it,
+[[kind, line], ...], "now": "ISO time", "base_paths": {name: "/path"}}, raw API objects as returned. With it,
 no notification is sent. Runs on /usr/bin/python3 (3.9) under launchd.
 """
 import argparse, datetime, json, os, shutil, subprocess, sys, tempfile
 
 IDLE_DAYS = 7
+# Next.js apps with a basePath 404 at the root, so watch probes the path they serve.
+BASE_PATHS = {
+}
 FAILED_CHECK = {"FAILURE", "TIMED_OUT", "ACTION_REQUIRED", "STARTUP_FAILURE"}
 FAILED_STATUS = {"FAILURE", "ERROR"}
 
@@ -39,10 +42,10 @@ def cli_json(args):
         return None, "unreadable output from " + " ".join(args[:2])
 
 
-def site_url(serving):
+def site_url(serving, path=""):
     # Vercel lists the custom domain first today; that ordering is undocumented.
     host = (serving.get("alias") or [None])[0] or serving.get("url")
-    return "https://" + host if host else None
+    return "https://" + host + path if host else None
 
 
 def fetch(url):
@@ -80,7 +83,7 @@ def gather_deploys(data):
             if not serving:
                 continue
             data["projects"].append(p)
-            url = site_url(serving)
+            url = site_url(serving, BASE_PATHS.get(p["name"], ""))
             if url:
                 data["http"][url] = fetch(url)
             # Not the project's latestDeployments: that mixes in previews and holds two.
@@ -126,7 +129,8 @@ def site_findings(data):
         serving = (p.get("targets") or {}).get("production")
         if not serving:
             continue
-        name, url = p["name"], site_url(serving)
+        name = p["name"]
+        url = site_url(serving, data.get("base_paths", BASE_PATHS).get(name, ""))
         r = data["http"].get(url)
         if isinstance(r, int):
             r = {"status": r}

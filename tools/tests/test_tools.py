@@ -62,6 +62,10 @@ class SettingsMerge(Temp):
                          runtime={"enabledPlugins": {"a": True, "b": True}})
         self.assertEqual(out["enabledPlugins"], {"a": False, "b": True})
 
+    def test_env_home_paths_expand(self):
+        out = self.merge({"env": {"A": "~/x", "B": "a~/b"}})
+        self.assertEqual(out["env"], {"A": os.path.expanduser("~/x"), "B": "a~/b"})
+
 
 class JsonSame(Temp):
     def test_key_order_and_escaping_dont_matter(self):
@@ -193,6 +197,16 @@ class Watch(Temp):
         self.assertEqual(out, ["site acme: https://acme.example.com does not answer (Could not resolve host)"])
         _, out = self.watch(self.site("acme", {"status": 200, "login": True}))
         self.assertEqual(out, ["site acme: https://acme.example.com redirects to the Vercel login"])
+
+    def test_site_base_path(self):
+        f = self.site("acme", 404)
+        f["http"] = {"https://acme.example.com/acme": 200}
+        f["base_paths"] = {"acme": "/acme"}
+        rc, out = self.watch(f)
+        self.assertEqual(rc, 0)
+        f["http"] = {"https://acme.example.com/acme": 404}
+        _, out = self.watch(f)
+        self.assertEqual(out, ["site acme: https://acme.example.com/acme answers 404"])
 
     def test_failed_deploy_only_when_newer(self):
         newer = {"readyState": "ERROR", "createdAt": 101 * self.DAY}

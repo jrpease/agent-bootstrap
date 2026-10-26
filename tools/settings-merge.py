@@ -16,6 +16,9 @@ it to false in base or overlay — deleting the line no longer removes it from
 accounts that have it. tools/fleet-health.sh reports account-only entries so
 they get folded into the repo rather than accumulating unseen.
 
+A leading ~/ in an env value becomes $HOME: Claude Code passes env through
+literally, and the two Macs have different home directories.
+
 Everything else in --runtime is replaced. Callers compare an account file to a
 re-merge by content (tools/json-same.py), since the Claude CLI rewrites these
 files in its own key order and escaping.
@@ -56,4 +59,7 @@ while args:
                 target = result.setdefault(key, {})
                 for name, value in existing[key].items():
                     target.setdefault(name, value)
+for key, value in (result.get("env") or {}).items():
+    if isinstance(value, str) and value.startswith("~/"):
+        result["env"][key] = os.path.expanduser(value)
 print(json.dumps(result, indent=2))
