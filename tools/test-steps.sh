@@ -105,7 +105,8 @@ done
 [[ -f "$REPO/claude/accounts/work.settings.json" ]] && check "work's overlay applied" python3 -c "
 import json; o = json.load(open('$REPO/claude/accounts/work.settings.json'))
 s = json.load(open('$H/.claude-work/settings.json'))
-def within(a, b): return all(within(v, b.get(k, {})) if isinstance(v, dict) else b.get(k) == v for k, v in a.items())
+def expect(v, env): return '$H/' + v[2:] if env and isinstance(v, str) and v.startswith('~/') else v  # config expands env ~/
+def within(a, b, env=False): return all(within(v, b.get(k, {}), k == 'env') if isinstance(v, dict) else b.get(k) == expect(v, env) for k, v in a.items())
 assert within(o, s)"
 check "both accounts' memory points at one store" bash -c "test -L '$H/.claude/projects/-tmp-proj/memory' && test \"\$(readlink '$H/.claude/projects/-tmp-proj/memory')\" = \"\$(readlink '$H/.claude-work/projects/-tmp-proj/memory')\""
 check "the merged MEMORY.md kept both notes" bash -c "grep -q 'from .claude]' '$H/.local/share/claude-memory/-tmp-proj/MEMORY.md' && grep -q 'from .claude-work]' '$H/.local/share/claude-memory/-tmp-proj/MEMORY.md'"
