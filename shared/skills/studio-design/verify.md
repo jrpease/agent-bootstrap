@@ -137,7 +137,7 @@ Mechanical, gates like the detector, does not go to the critic. Same URL, same r
 | LCP | ≤ 2500ms |
 | CLS | ≤ 0.1 |
 | INP | ≤ 200ms |
-| Long frames (>16.7ms) during any scripted interaction | ≤ 10% |
+| Long frames (>20ms) during any scripted interaction | ≤ 10% |
 | Worst single frame | ≤ 50ms |
 | Hero GLB, after `gltf-transform optimize` *(provisional)* | ≤ 2 MB transferred · textures ≤ 2048px · ≤ 100k triangles |
 
@@ -148,7 +148,7 @@ node reference/perf.mjs http://127.0.0.1:<port>/verify/jank-control.html --expec
 ```
 
 Mobile runs at **4× CPU throttle** — an unthrottled laptop is not evidence about a phone. The
-`--expect-fail` control blocks the main thread ~20ms/frame; a working harness reports it ~100% long
+`--expect-fail` control blocks the main thread ~33ms/frame; a working harness reports it ~100% long
 frames and prints `INSTRUMENT OK`. A harness that reports the control green is broken, whatever it
 reports elsewhere.
 

@@ -31,7 +31,7 @@
       "command": "npx",
       "args": [
         "-y",
-        "@shopify/dev-mcp@1.16.0"
+        "@shopify/dev-mcp@1.17.0"
       ],
       "env": {},
       "accounts": [
@@ -92,7 +92,7 @@
       "command": "npx",
       "args": [
         "-y",
-        "vgpu@0.5.0",
+        "vgpu@0.6.0",
         "mcp"
       ],
       "env": {}

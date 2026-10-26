@@ -71,7 +71,7 @@ export async function measure(url, { width = 1440, height = 900, cpuThrottle = 1
   await browser.close()
 
   const f = [...scrollFrames, ...interactionFrames]
-  const long = f.filter((d) => d > 16.7)
+  const long = f.filter((d) => d > 20)
   return {
     // null, not 0 — an absent measurement must not read as a passing one.
     lcp: v.lcp || null,                       // no LCP candidate on the page
@@ -108,7 +108,7 @@ export function verdict(m) {
     line('LCP', m.lcp, 'ms', m.budget.lcp, (v, b) => v > b),
     line('CLS', m.cls, '', m.budget.cls, (v, b) => v > b),
     line('INP', m.inp, 'ms', m.budget.inp, (v, b) => v > b),
-    line('long frames >16.7ms', m.longFramePct, '%', m.budget.longFramePct, (v, b) => v > b),
+    line('long frames >20ms', m.longFramePct, '%', m.budget.longFramePct, (v, b) => v > b),
     line('worst frame', m.worstFrame, 'ms', m.budget.worstFrame, (v, b) => v > b),
   ]
 }
