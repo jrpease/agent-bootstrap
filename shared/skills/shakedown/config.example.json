@@ -1,0 +1,24 @@
+{
+  "product": "lanternly",
+  "repos": [
+    {"path": "~/Dev/lanternly-web", "kind": "frontend"},
+    {"path": "~/Dev/lanternly-api", "kind": "api"}
+  ],
+  "targets": {
+    "nonprod": {"app": "https://staging.lanternly.example", "api": "https://api-staging.lanternly.example"},
+    "prod": {"app": "https://lanternly.example", "api": "https://api.lanternly.example"}
+  },
+  "roles": [
+    {"name": "owner", "description": "Owns two workspaces with members and projects"},
+    {"name": "member", "description": "Belongs to one of owner's workspaces, no admin rights"},
+    {"name": "newuser", "description": "Fresh account parked partway through signup"}
+  ],
+  "devices": ["desktop-chrome", "desktop-safari", "desktop-firefox", "ipad-safari", "iphone-safari", "android-chrome"],
+  "offLimits": [
+    "Billing and payment pages: never submit anything there",
+    "Never send invitations to real email addresses"
+  ],
+  "session": {"cookie": "lanternly_session", "authPath": "/auth/"},
+  "scrollContainer": null,
+  "api": {"tokenEnv": null}
+}

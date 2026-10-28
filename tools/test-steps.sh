@@ -101,6 +101,9 @@ for d in "$H/.claude" "$H/.claude-work"; do
   check "$a has every agent" bash -c "for g in '$REPO'/claude/agents/*.md; do test -e '$d/agents/'\"\$(basename \"\$g\")\" || exit 1; done"
   check "$a has its MCP servers" python3 -c "import json; assert json.load(open('$d/.claude.json'))['mcpServers']"
 done
+# A .agents sidecar without codex keeps a skill out of Codex; kickoff proves Codex linking ran.
+check "kickoff is linked into Codex" test -e "$H/.agents/skills/kickoff"
+check "shakedown is not linked into Codex" test ! -e "$H/.agents/skills/shakedown"
 # The public copy ships no account overlays.
 [[ -f "$REPO/claude/accounts/work.settings.json" ]] && check "work's overlay applied" python3 -c "
 import json; o = json.load(open('$REPO/claude/accounts/work.settings.json'))
