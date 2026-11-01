@@ -109,7 +109,7 @@ fi
 # The post-merge hook makes a pull on main redeploy. Rewritten every deploy, so it
 # tracks this script. It deploys origin/main, so a merge made locally on main reaches
 # live after it's pushed and pulled, not at the local merge.
-hook="$(git -C "$DEV" rev-parse --git-path hooks)/post-merge"
+hook="$(git -C "$DEV" rev-parse --path-format=absolute --git-path hooks)/post-merge"
 cat > "$hook" <<'EOF'
 #!/usr/bin/env bash
 # Installed by tools/deploy-live.sh: a pull or merge on main redeploys the live copy.
