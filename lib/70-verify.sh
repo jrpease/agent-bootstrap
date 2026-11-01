@@ -185,11 +185,11 @@ for nm in "${codex_homes[@]}"; do
   while IFS=$'\t' read -r status msg; do
     case "$status" in ok) ok "$msg" ;; warn) warn "$msg" ;; *) err "$msg" ;; esac
   done < <(python3 - "$home/config.toml" <<'PY'
-import sys, tomllib, pathlib
+import sys, tomlkit, pathlib
 p = pathlib.Path(sys.argv[1])
 if not p.exists():
     print("err\tconfig.toml missing"); sys.exit()
-d = tomllib.load(open(p, "rb"))
+d = tomlkit.parse(p.read_text()).unwrap()
 prof = d.get("default_permissions")
 perms = d.get("permissions", {}).get(prof or "", {})
 fs = perms.get("filesystem", {})
