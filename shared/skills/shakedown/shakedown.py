@@ -6,7 +6,7 @@
   shakedown.py validate <config.json>
   shakedown.py plan <config.json> <smoke|standard|full> [--prod] [--product-lanes lanes.json]
                    [--drop-role R]... [--only-lanes a,b]
-  shakedown.py render <plan.json> <config.json> --prefix P --kinds kinds.txt --test-map PATH --run-dir DIR
+  shakedown.py render <plan.json> <config.json> --prefix P --kinds kinds.txt --test-map PATH --run-dir DIR [--prior results.json]
   shakedown.py estimate <plan.json>
   shakedown.py usage add <wf-run.json>
   shakedown.py usage seed <file>
@@ -193,7 +193,8 @@ def hard_rules(cfg, target, app):
     return "\n".join(rules)
 
 
-def render(pl, cfg, prefix, kinds, test_map, run_dir, config_path):
+def render(pl, cfg, prefix, kinds, test_map, run_dir, config_path, prior=None):
+    """prior: the earlier run's results.json, so a lead-only rerun sees what that run's lanes covered."""
     lib = standard_lanes()
     t = cfg["targets"][pl["target"]]
     repos = lambda kind: ", ".join(r["path"] for r in cfg["repos"] if r["kind"] == kind) or "(none)"
@@ -218,6 +219,7 @@ def render(pl, cfg, prefix, kinds, test_map, run_dir, config_path):
         return (f"\n\nSet these for every script you run: SHAKEDOWN_CONFIG={config_path} "
                 f"SHAKEDOWN_TARGET={pl['target']} SHAKEDOWN_RUN={run_dir} SHAKEDOWN_LANE={lane}")
 
+    stage_of = {l["key"]: l["stage"] for l in lib["lanes"]}  # product lanes run logged in, as in plan()
     stages = []
     for s in pl["stages"]:
         common = lib["common"][s["name"]]
@@ -228,6 +230,10 @@ def render(pl, cfg, prefix, kinds, test_map, run_dir, config_path):
             "lanes": [{"key": k, "prompt": fill(common, values(k)) + "\n\n" + fill(prompts[k], values(k)) + env(k)}
                       for k in s["lanes"]],
         })
+        if prior and not s["lanes"]:
+            stages[-1]["priorCoverage"] = [f"{key}: {item}" for key, lane in (prior.get("lanes") or {}).items()
+                                           if lane and stage_of.get(key, "logged-in") == s["name"]
+                                           for item in lane.get("coverage", [])]
     return {"product": pl["product"], "target": pl["target"], "prefix": prefix,
             "models": {"tester": "sonnet"}, "stages": stages}
 
@@ -318,8 +324,9 @@ def main(argv):
         if os.path.exists(kinds_file):
             with open(kinds_file) as f:
                 kinds = f.read().strip()
+        prior = load(opt(args, "--prior")) if "--prior" in args else None
         print(json.dumps(render(load(args[0]), load(args[1]), opt(args, "--prefix"), kinds,
-                                opt(args, "--test-map"), opt(args, "--run-dir"), expand(args[1])), indent=2))
+                                opt(args, "--test-map"), opt(args, "--run-dir"), expand(args[1]), prior), indent=2))
     elif cmd == "estimate":
         print(json.dumps(estimate(load(args[0])), indent=2))
     elif cmd == "usage" and args[:1] == ["add"]:

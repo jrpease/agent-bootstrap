@@ -152,7 +152,8 @@ Tell the user the counts by severity, the most serious few findings, what was cr
   into the new one, since resume skips prep. Plan with the old run's flags plus
   `--only-lanes <a,b,...>`, which cuts everything else and recomputes the counts. List the old run's leftovers from its `created.md`
   without touching them, check sessions (step 3), and show the approval screen again, saying which
-  lanes rerun and why. Then step 6, and step 7 with
+  lanes rerun and why. Then step 6, adding `--prior <old-run>/results.json` to the render command
+  so a lead-only rerun sees what the earlier lanes covered, and step 7 with
   `python3 "$SK/report.py" <run> --prior <old-run>/results.json` so the reports cover both runs.
 
 ## Red flags

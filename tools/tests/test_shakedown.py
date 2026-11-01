@@ -355,6 +355,25 @@ class ResumeFixes(Temp):
         self.assertEqual(pl["stages"], [{"name": "logged-in", "lanes": []}])
         self.assertEqual(pl["agents"]["total"], 2)
 
+    def test_lead_only_resume_sees_earlier_coverage(self):
+        pl = sd.plan(EXAMPLE, "standard", False, [], only_lanes=["gaps-logged-in"])
+        prior = {"lanes": {"permissions": {"coverage": ["GET /p as member"]},
+                           "api-contract": {"coverage": ["GET /items"]}, "code-review": None}}
+        args = sd.render(pl, EXAMPLE, "QA1b", "", "/t", "/r", "/c", prior=prior)
+        self.assertEqual(args["stages"][0]["priorCoverage"], ["permissions: GET /p as member"])
+        self.assertNotIn("priorCoverage", sd.render(pl, EXAMPLE, "QA1b", "", "/t", "/r", "/c")["stages"][0])
+        # A stage with lanes of its own gets no earlier coverage.
+        full = sd.render(sd.plan(EXAMPLE, "standard"), EXAMPLE, "QA1b", "", "/t", "/r", "/c", prior=prior)
+        self.assertFalse(any("priorCoverage" in st for st in full["stages"]))
+        # The CLI takes it as --prior.
+        dump(pl, os.path.join(self.dir, "plan.json"))
+        dump(prior, os.path.join(self.dir, "results.json"))
+        r = self.cli("render", os.path.join(self.dir, "plan.json"), os.path.join(SKILL, "config.example.json"),
+                     "--prefix", "QA1b", "--kinds", os.path.join(self.dir, "none.txt"), "--test-map", "/t",
+                     "--run-dir", "/r", "--prior", os.path.join(self.dir, "results.json"))
+        self.assertEqual(r.returncode, 0, r.stderr)
+        self.assertEqual(json.loads(r.stdout)["stages"][0]["priorCoverage"], ["permissions: GET /p as member"])
+
     def test_misspelled_lane_warns(self):
         cfg = os.path.join(SKILL, "config.example.json")
         r = self.cli("plan", cfg, "standard", "--only-lanes", "permisions")
