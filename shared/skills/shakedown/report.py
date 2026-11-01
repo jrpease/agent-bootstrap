@@ -73,6 +73,7 @@ def collect(result, prior=None):
         stage, gaps, label = e["stage"], e["gaps"], e["prefix"]
         findings += [dict(f, lane=f"{f.get('lane', 'gaps-' + stage)} ({label})") for f in gaps.get("findings", [])]
         created += [(f"gaps-{stage} ({label})", c) for c in gaps.get("created", [])]
+        untested += [f"{c[len('UNTESTED:'):].strip()} ({label})" for c in gaps.get("coverage", []) if c.startswith("UNTESTED:")]
     return findings, untested, crashed, created, lanes, earlier
 
 

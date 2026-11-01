@@ -376,7 +376,8 @@ class ResumeFixes(Temp):
             {"name": "logged-in", "lanes": [
                 {"lane": "permissions", "coverage": [], "created": ["team | QA1028 permissions t | u"], "findings": []},
                 {"lane": "a11y-responsive-signed-in", "crashed": True}],
-             "gaps": {"coverage": [], "created": [], "findings": [finding("lead found it", "major", "confirmed", "gaps-logged-in")]}}]}},
+             "gaps": {"coverage": ["UNTESTED: locale switcher"], "created": [],
+                      "findings": [finding("lead found it", "major", "confirmed", "gaps-logged-in")]}}]}},
              os.path.join(old, "workflow-run.json"))
         rp.report(old)
         new = os.path.join(self.dir, "new")
@@ -386,8 +387,11 @@ class ResumeFixes(Temp):
              "gaps": {"coverage": [], "created": [], "findings": []}}]}}, os.path.join(new, "workflow-run.json"))
         summary = rp.report(new, os.path.join(old, "results.json"))
         self.assertEqual(summary["confirmed"], 1)
+        self.assertEqual(summary["untested"], 1)
         with open(os.path.join(new, "report.md")) as f:
-            self.assertIn("lead found it", f.read())
+            md = f.read()
+        self.assertIn("lead found it", md)
+        self.assertIn("- locale switcher (QA1028)", md)
         with open(os.path.join(new, "created.md")) as f:
             self.assertIn("permissions (QA1028): team | QA1028 permissions t", f.read())
 
