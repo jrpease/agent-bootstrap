@@ -8,11 +8,7 @@ against Codex's own model list (~/.codex/models_cache.json).
   python3 tools/model-check.py "$HOME" "$DOTFILES"
 """
 import glob, json, os, re, sys
-try:
-    import tomllib
-except ImportError:   # Python < 3.11; checks 1-4 run on the system 3.9, this one cannot
-    print(f"model routing: needs Python 3.11+ (found {sys.version.split()[0]}) — put Homebrew's python3 first on the fleet-health PATH")
-    sys.exit(0)
+import tomlkit
 home, dotfiles = sys.argv[1:]
 ALIASES = {"haiku", "sonnet", "opus", "fable", "opusplan", "inherit", "default"}
 
@@ -73,12 +69,12 @@ def stale(model):
 
 configured = []
 try:
-    configured.append(("~/.codex/config.toml", tomllib.load(open(os.path.join(codex, "config.toml"), "rb")).get("model")))
+    configured.append(("~/.codex/config.toml", tomlkit.parse(open(os.path.join(codex, "config.toml")).read()).unwrap().get("model")))
 except (OSError, ValueError):
     pass
 for role in sorted(glob.glob(os.path.join(codex, "agents", "*.toml"))):
     try:
-        configured.append((role.replace(home, "~"), tomllib.load(open(role, "rb")).get("model")))
+        configured.append((role.replace(home, "~"), tomlkit.parse(open(role).read()).unwrap().get("model")))
     except (OSError, ValueError):
         pass
 for where, model in configured:

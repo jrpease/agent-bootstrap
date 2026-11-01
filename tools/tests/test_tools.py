@@ -6,6 +6,7 @@ Each tool is a script (hyphenated names, not importable), so the tests drive the
 the way the steps do: as subprocesses over temporary files. No network, no LastPass,
 no real HOME.
 """
+import importlib.util
 import json
 import os
 import subprocess
@@ -155,6 +156,17 @@ class PinCheck(Temp):
         self.assertEqual(r.returncode, 0, r.stderr)
         kinds = [line.split("\t")[0] for line in r.stdout.splitlines() if line]
         self.assertEqual(kinds, ["drift", "drift"])
+
+
+@unittest.skipUnless(importlib.util.find_spec("tomlkit"), "tomlkit not installed")
+class ModelCheck(Temp):
+    def test_codex_model_missing_from_cache(self):
+        self.write(".codex/models_cache.json", {"fetched_at": "2026-11-01",
+                   "models": [{"slug": "gpt-6-astra", "visibility": "list"}]})
+        self.write(".codex/config.toml", 'model = "gpt-0-gone"\n')
+        r = run("model-check.py", self.dir, self.dir)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        self.assertIn("isn't in the model list", r.stdout)
 
 
 class Watch(Temp):
