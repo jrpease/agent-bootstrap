@@ -66,12 +66,14 @@ def collect(result, prior=None):
             before = len(created)
             add_lane(lane, findings, created)
             created[before:] = [(f"{who} ({old})", c) for who, c in created[before:]]
-    # The QA lead reruns on resume; the earlier lead's verified findings still count.
-    for stage, gaps in ((prior or {}).get("gaps") or {}).items():
-        if gaps:
-            findings += [dict(f, lane=f"{f.get('lane', 'gaps-' + stage)} ({old})") for f in gaps.get("findings", [])]
-            created += [(f"gaps-{stage} ({old})", c) for c in gaps.get("created", [])]
-    return findings, untested, crashed, created, lanes
+    # The QA lead reruns on resume; every earlier lead's verified findings still count.
+    earlier = list((prior or {}).get("earlierGaps") or []) + [
+        {"prefix": old, "stage": s, "gaps": g} for s, g in ((prior or {}).get("gaps") or {}).items() if g]
+    for e in earlier:
+        stage, gaps, label = e["stage"], e["gaps"], e["prefix"]
+        findings += [dict(f, lane=f"{f.get('lane', 'gaps-' + stage)} ({label})") for f in gaps.get("findings", [])]
+        created += [(f"gaps-{stage} ({label})", c) for c in gaps.get("created", [])]
+    return findings, untested, crashed, created, lanes, earlier
 
 
 def read_writes(run_dir):
@@ -101,7 +103,7 @@ def report(run_dir, prior_path=None):
     if prior_path:
         with open(prior_path) as f:
             prior = json.load(f)
-    findings, untested, crashed, created, lanes = collect(result, prior)
+    findings, untested, crashed, created, lanes, earlier = collect(result, prior)
     confirmed = sorted((f for f in findings if verdict(f) == "confirmed"), key=lambda f: ORDER.get(severity(f), 9))
     others = [f for f in findings if verdict(f) != "confirmed"]
     counts = Counter(severity(f) for f in confirmed)
@@ -152,7 +154,8 @@ def report(run_dir, prior_path=None):
 
     with open(os.path.join(run_dir, "results.json"), "w") as f:
         json.dump({"prefix": result.get("prefix"), "lanes": lanes,
-                   "gaps": {s["name"]: s.get("gaps") for s in result.get("stages", [])}}, f, indent=1)
+                   "gaps": {s["name"]: s.get("gaps") for s in result.get("stages", [])},
+                   "earlierGaps": earlier}, f, indent=1)
     return {"confirmed": len(confirmed), "notConfirmed": len(others), "untested": len(untested),
             "crashed": crashed, "unmatchedWrites": len(unmatched)}
 

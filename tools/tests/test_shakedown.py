@@ -391,6 +391,24 @@ class ResumeFixes(Temp):
         with open(os.path.join(new, "created.md")) as f:
             self.assertIn("permissions (QA1028): team | QA1028 permissions t", f.read())
 
+    def test_lead_findings_survive_a_second_resume(self):
+        def run(name, prefix, gaps, prior=None):
+            d = os.path.join(self.dir, name)
+            os.makedirs(d)
+            dump({"result": {"product": "p", "target": "nonprod", "prefix": prefix, "stages": [
+                {"name": "logged-in", "lanes": [{"lane": "permissions", "coverage": [], "created": [], "findings": []}],
+                 "gaps": {"coverage": [], "created": [], "findings": gaps}}]}}, os.path.join(d, "workflow-run.json"))
+            return d, rp.report(d, prior and os.path.join(prior, "results.json"))
+        a, _ = run("a", "QA1028", [finding("lead found it", "major", "confirmed", "gaps-logged-in")])
+        b, _ = run("b", "QA1028b", [], a)
+        c, summary = run("c", "QA1028c", [], b)
+        self.assertEqual(summary["confirmed"], 1)
+        with open(os.path.join(c, "report.md")) as f:
+            self.assertIn("lead found it** (gaps-logged-in (QA1028)", f.read())
+        with open(os.path.join(c, "results.json")) as f:
+            earlier = json.load(f)["earlierGaps"]
+        self.assertIn(("QA1028", "logged-in"), [(e["prefix"], e["stage"]) for e in earlier])
+
 
 if __name__ == "__main__":
     unittest.main()
