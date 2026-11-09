@@ -69,11 +69,15 @@ def collect(result, prior=None):
     # The QA lead reruns on resume; every earlier lead's verified findings still count.
     earlier = list((prior or {}).get("earlierGaps") or []) + [
         {"prefix": old, "stage": s, "gaps": g} for s, g in ((prior or {}).get("gaps") or {}).items() if g]
-    for e in earlier:
+    # Untested lines carry only for a stage whose lead didn't return this run, and only from its newest earlier lead.
+    led = {s["name"] for s in result.get("stages", []) if s.get("gaps")}
+    newest = {e["stage"]: i for i, e in enumerate(earlier)}
+    for i, e in enumerate(earlier):
         stage, gaps, label = e["stage"], e["gaps"], e["prefix"]
         findings += [dict(f, lane=f"{f.get('lane', 'gaps-' + stage)} ({label})") for f in gaps.get("findings", [])]
         created += [(f"gaps-{stage} ({label})", c) for c in gaps.get("created", [])]
-        untested += [f"{c[len('UNTESTED:'):].strip()} ({label})" for c in gaps.get("coverage", []) if c.startswith("UNTESTED:")]
+        if stage not in led and newest[stage] == i:
+            untested += [f"{c[len('UNTESTED:'):].strip()} ({label})" for c in gaps.get("coverage", []) if c.startswith("UNTESTED:")]
     return findings, untested, crashed, created, lanes, earlier
 
 

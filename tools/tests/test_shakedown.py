@@ -406,11 +406,11 @@ class ResumeFixes(Temp):
              "gaps": {"coverage": [], "created": [], "findings": []}}]}}, os.path.join(new, "workflow-run.json"))
         summary = rp.report(new, os.path.join(old, "results.json"))
         self.assertEqual(summary["confirmed"], 1)
-        self.assertEqual(summary["untested"], 1)
+        self.assertEqual(summary["untested"], 0)
         with open(os.path.join(new, "report.md")) as f:
             md = f.read()
         self.assertIn("lead found it", md)
-        self.assertIn("- locale switcher (QA1028)", md)
+        self.assertNotIn("locale switcher", md)
         with open(os.path.join(new, "created.md")) as f:
             self.assertIn("permissions (QA1028): team | QA1028 permissions t", f.read())
 
@@ -431,6 +431,42 @@ class ResumeFixes(Temp):
         with open(os.path.join(c, "results.json")) as f:
             earlier = json.load(f)["earlierGaps"]
         self.assertIn(("QA1028", "logged-in"), [(e["prefix"], e["stage"]) for e in earlier])
+
+    def untested_run(self, name, prefix, stages, prior=None):
+        d = os.path.join(self.dir, name)
+        os.makedirs(d)
+        dump({"result": {"product": "p", "target": "nonprod", "prefix": prefix, "stages": stages}},
+             os.path.join(d, "workflow-run.json"))
+        summary = rp.report(d, prior and os.path.join(prior, "results.json"))
+        with open(os.path.join(d, "report.md")) as f:
+            return d, summary, f.read()
+
+    def lead_stage(self, name, coverage):
+        return {"name": name, "lanes": [{"lane": f"{name}-lane", "coverage": [], "created": [], "findings": []}],
+                "gaps": {"coverage": coverage, "created": [], "findings": []}}
+
+    def test_untested_carries_for_a_stage_left_out(self):
+        a, _, _ = self.untested_run("a", "QA1028", [self.lead_stage("logged-out", ["UNTESTED: locale switcher"]),
+                                                    self.lead_stage("logged-in", ["UNTESTED: billing"])])
+        _, summary, md = self.untested_run("b", "QA1028b", [self.lead_stage("logged-in", [])], a)
+        self.assertEqual(summary["untested"], 1)
+        self.assertIn("- locale switcher (QA1028)", md)
+        self.assertNotIn("billing", md)
+
+    def test_untested_carries_when_the_lead_crashed(self):
+        a, _, _ = self.untested_run("a", "QA1028", [self.lead_stage("logged-in", ["UNTESTED: billing"])])
+        crashed = dict(self.lead_stage("logged-in", []), gaps=None)
+        _, summary, md = self.untested_run("b", "QA1028b", [crashed], a)
+        self.assertEqual(summary["untested"], 1)
+        self.assertIn("- billing (QA1028)", md)
+
+    def test_untested_chain_carries_only_the_newest_lead(self):
+        a, _, _ = self.untested_run("a", "QA1028", [self.lead_stage("logged-in", ["UNTESTED: billing"])])
+        b, _, _ = self.untested_run("b", "QA1028b", [self.lead_stage("logged-in", ["UNTESTED: exports"])], a)
+        _, summary, md = self.untested_run("c", "QA1028c", [self.lead_stage("logged-out", [])], b)
+        self.assertEqual(summary["untested"], 1)
+        self.assertIn("- exports (QA1028b)", md)
+        self.assertNotIn("billing", md)
 
 
 if __name__ == "__main__":
