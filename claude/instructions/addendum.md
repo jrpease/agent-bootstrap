@@ -19,6 +19,9 @@ inside plan mode, since read-only is the right posture for it) → `/review-spec
 → `/build-spec`, which walks the Plan and hands its mechanical steps to
 `implementer`.
 
+To run the chain end to end, sized to the request, use `/crush-it`. It ends at
+an open PR and never merges.
+
 `/grill-to-spec` is the entry point, not `/grill-me`. A bare interview ends with
 the thinking still in the conversation, and the moment it settles is exactly
 when nobody wants to stop and write it up.

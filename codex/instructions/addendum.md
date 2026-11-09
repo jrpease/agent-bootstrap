@@ -21,6 +21,10 @@ Edit those, then re-run `./setup.sh config`.
 → `$build-spec`, which walks the Plan and hands its mechanical steps to
 `implementer`.
 
+To run the chain end to end, sized to the request, use `$crush-it`. It ends at
+an open PR and never merges. Its Large flow needs `grilling`, which Codex doesn't
+have, so here it runs Small and Medium only.
+
 `$grill-to-spec` is the entry point, not `$grill-me`. A bare interview ends with
 the thinking still in the conversation, and the moment it settles is exactly
 when nobody wants to stop and write it up.
