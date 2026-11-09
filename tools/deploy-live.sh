@@ -124,10 +124,10 @@ export PATH="$HOME/.local/bin:/opt/homebrew/bin:/usr/local/bin:$PATH"
 command -v fnm >/dev/null && eval "$(fnm env --shell bash)"
 "$(git rev-parse --show-toplevel)/setup.sh" deploy \
   || echo "live deploy failed after the merge; the pull itself is done. Retry: ./setup.sh deploy" >&2
-# Deploy doesn't register MCP servers, and links skills only when it can see the set changed.
-changed="$(git diff --name-only ORIG_HEAD HEAD -- shared/skills/ shared/mcp/ 2>/dev/null)"
-if grep -q '^shared/skills/' <<<"$changed"; then echo "new skills on main — run ./setup.sh skills"; fi
-if grep -q '^shared/mcp/' <<<"$changed"; then echo "MCP server changes on main — run ./setup.sh mcp"; fi
+# Deploy re-links skills itself when the set changes, but never registers MCP servers.
+if [[ -n "$(git diff --name-only ORIG_HEAD HEAD -- shared/mcp/ 2>/dev/null)" ]]; then
+  echo "MCP server changes on main — run ./setup.sh mcp"
+fi
 exit 0
 EOF
 chmod +x "$hook"
