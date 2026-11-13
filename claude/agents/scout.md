@@ -2,6 +2,7 @@
 name: scout
 description: 'Bulk reading, codebase search, and reconnaissance. Returns findings and file:line anchors, never file dumps.'
 model: haiku
+effort: medium
 tools: Read, Grep, Glob, Bash
 ---
 

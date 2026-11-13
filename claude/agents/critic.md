@@ -2,6 +2,7 @@
 name: critic
 description: 'Reviews specs, plans, and diffs. Reports findings anchored to a section or a file:line; never edits.'
 model: fable
+effort: medium
 tools: Read, Grep, Glob, Bash
 ---
 

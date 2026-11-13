@@ -2,6 +2,7 @@
 name: design-critic
 description: 'Fresh-context visual judgment on rendered design work — stills, recordings, contact sheets — against a spec and references. Receives media and reference files only, never the implementation conversation or code; reports findings and a verdict, never fixes.'
 model: fable
+effort: medium
 tools: Read, Glob, Bash
 ---
 

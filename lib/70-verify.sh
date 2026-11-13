@@ -125,6 +125,8 @@ if [[ -d "$DOTFILES/claude/agents" ]]; then
     fm="$(awk 'NR==1 && /^---$/{inb=1; next} inb && /^---$/{exit} inb' "$agent")"
     a_name="$(printf '%s\n' "$fm" | sed -n 's/^name: *//p' | head -1)"
     a_model="$(printf '%s\n' "$fm" | sed -n 's/^model: *//p' | head -1)"
+    a_effort="$(printf '%s\n' "$fm" | sed -n 's/^effort: *//p' | head -1)"
+    a_effort="${a_effort:-(default)}"
     # description is emitted single-quoted by tools/compose-agents.py; strip the
     # wrapping quotes for display and un-double any escaped apostrophe.
     a_desc="$(printf '%s\n' "$fm" | sed -n 's/^description: *//p' | head -1 \
@@ -132,7 +134,7 @@ if [[ -d "$DOTFILES/claude/agents" ]]; then
     if [[ -z "$a_name" || -z "$a_model" ]]; then
       warn "$(basename "$agent"): missing name or model in frontmatter"
     else
-      printf '    %-12s -> %-8s %s\n' "$a_name" "$a_model" "$a_desc"
+      printf '    %-12s -> %-8s %-10s %s\n' "$a_name" "$a_model" "$a_effort" "$a_desc"
     fi
   done
 else

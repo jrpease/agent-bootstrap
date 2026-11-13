@@ -148,7 +148,7 @@ Route by work type — the model comes with the agent:
 
 | Work | Agent |
 |------|-------|
-| Reading more than ~2 files to answer a question; codebase search | `scout` |
+| Reading whose output is bulky when only the conclusion is needed, or lookups that can run in parallel; codebase search | `scout` |
 | The same decided edit across 3+ files, or a long mechanical transcription | `implementer` |
 | Reviewing a spec, plan, or diff | `critic` |
 

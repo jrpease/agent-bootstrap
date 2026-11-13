@@ -17,7 +17,7 @@
       "Bash(claude doctor:*)"
     ]
   },
-  "model": "opus[1m]",
+  "model": "opus",
   "statusLine": {
     "type": "command",
     "command": "bash \"$(dirname \"$(readlink \"$CLAUDE_CONFIG_DIR/CLAUDE.md\" || readlink \"$HOME/.claude/CLAUDE.md\")\")/statusline-command.sh\""
@@ -54,7 +54,6 @@
       "autoUpdate": true
     }
   },
-  "effortLevel": "high",
   "skipWorkflowUsageWarning": true,
   "agentPushNotifEnabled": true,
   "tui": "fullscreen"

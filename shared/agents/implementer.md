@@ -54,6 +54,7 @@ and verify your own work.
 
 - Make only the changes the brief describes. Adjacent code you would improve is
   out of scope — mention it in your report instead.
+- Don't add tests, docs or comments the brief didn't ask for.
 - Match the surrounding style, even where you would write it differently.
 - Verify before reporting: run the check the brief names, and paste its real
   output. Never report success you have not observed.

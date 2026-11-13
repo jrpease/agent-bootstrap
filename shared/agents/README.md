@@ -4,12 +4,12 @@ Four agents, carved by **work type** rather than model tier, so the call at the
 point of work is "what kind of task is this" — not "which model does this
 deserve." The model is an implementation detail baked into each definition.
 
-| Agent | Claude | Codex | Work |
-|---|---|---|---|
-| `scout` | `haiku` | `gpt-6-luna` · high | Bulk reading, codebase search, "where is X" |
-| `implementer` | `sonnet` | `gpt-6.1-sol` · medium | The same decided edit across many files; long transcription |
-| `critic` | `fable` | `gpt-6-astra` · high | Reviewing a spec, plan, or diff |
-| `design-critic` | `fable` | `gpt-6-astra` · high | Fresh-context visual judgment on rendered design work |
+| Agent | Claude | Claude effort | Codex | Work |
+|---|---|---|---|---|
+| `scout` | `haiku` | medium | `gpt-6-luna` · high | Bulk reading, codebase search, "where is X" |
+| `implementer` | `sonnet` | medium | `gpt-6.1-sol` · medium | The same decided edit across many files; long transcription |
+| `critic` | `fable` | medium | `gpt-6-astra` · high | Reviewing a spec, plan, or diff |
+| `design-critic` | `fable` | medium | `gpt-6-astra` · high | Fresh-context visual judgment on rendered design work |
 
 ## Routing
 
@@ -52,18 +52,18 @@ different model access, and a plan change means editing these files.
 
 ## Re-mapping
 
-**The `model:` line lives in `claude/agents/<name>.meta.yml` and `model =` in
+**The `model:` and `effort:` lines live in `claude/agents/<name>.meta.yml` and `model =` in
 `codex/agents/<name>.meta.toml`, not in the body.** Nothing generates or derives them.
 Codex's main model is the `--model` default in `tools/codex-config-merge.py`.
 
-`./setup.sh verify` prints the current Claude bindings (the Codex block only counts roles), so the roster surfaces on
+`./setup.sh verify` prints the current Claude bindings, model and declared effort (the Codex block only counts roles), so the roster surfaces on
 every setup run — new machines and updates, the moments worth reconsidering it.
 
 ## What does and does not drift
 
 - **A new version within a family** — nothing to do. `haiku`, `sonnet`, `opus`,
   and `fable` are family aliases, not version strings (the same form
-  `settings.json` uses for `"model": "opus[1m]"`). A new Haiku is picked up with
+  `settings.json` uses for `"model": "opus"`). A new Haiku is picked up with
   no edit.
 - **A family retired or renamed** — dispatch fails with an error naming the
   model. Loud and immediate; it cannot silently downgrade you to a weaker model.
@@ -77,10 +77,38 @@ every setup run — new machines and updates, the moments worth reconsidering it
   detectable, not automatable. This file exists so that re-read has the original
   reasoning to work from.
 
+## Claude 5 evidence (2026-11-13)
+
+Re-read against the Claude 5 family (Opus 5.5, Fable 5.2, Sonnet 5.5, Haiku 5.5).
+
+- **The session stays on Opus, not Fable.** Anthropic measured a Fable 5.2 orchestrator at
+  +19% cost for the same score, and Fable costs 2× Opus per token. Switch with `/model fable`
+  for long, ambiguous work, where Fable's lead is largest.
+- **Effort is pinned per agent.** A subagent on a different model doesn't inherit the
+  session's effort; it runs at its own model's default. And a top-level `effortLevel` in user
+  settings is ignored by Opus 5.5 and later, so it was dropped from `claude/settings.json`.
+  The session runs at the default, `medium`. Raise it per task with `/effort`.
+- **The critic stays on Fable, measured, not assumed.** In a blind head-to-head on five past
+  diffs, Fable at `medium` found 5 real issues and Opus at `high` found 3, on about the same
+  tokens, so Fable cost about 2× per review. It's a thin result: the reviews saw only the
+  diff, not the repo, and one diff out of five supplied the whole margin. Re-run the test
+  when the model families change.
+- **Scout is for bulky or parallel reads, not "more than two files".** Each dispatch carries a
+  fixed startup cost (about 53K tokens, measured locally on a Workflow agent). Anthropic no
+  longer counts protecting the context window as a reason to delegate in itself. What pays
+  is a big read that comes back as a short conclusion, or reads that can run in parallel.
+- **Ruled out:**
+  - Fable as the pinned orchestrator.
+  - Claude Code projects as a home for this roster. Cloud threads load a repo's `CLAUDE.md`
+    and `.claude/rules/`, but not agents, skills, hooks or `~/.claude`.
+  - The advisor tool: +1.7 points at 2.1× cost.
+  - A repo-pinned `modelSettings` effort entry, which is version-keyed and would silently
+    stop applying at the next release.
+
 ## Adding an agent
 
 Drop a `<name>.md` here with `name:` and `description:` frontmatter, add its
-`claude/agents/<name>.meta.yml` (`model:`, `tools:`) and `codex/agents/<name>.meta.toml`
+`claude/agents/<name>.meta.yml` (`model:`, `effort:`, `tools:`) and `codex/agents/<name>.meta.toml`
 (`model`, `model_reasoning_effort`), then run `./setup.sh skills`. Keep `description:` on a **single
 line** — `lib/70-verify.sh` reads it with `sed`.
 

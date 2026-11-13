@@ -1,4 +1,5 @@
 # Claude Code projection for shared/agents/implementer.md.
 # The shared body carries no pinning; this is where the tier is expressed.
 model: sonnet
+effort: medium
 tools: Read, Write, Edit, Bash

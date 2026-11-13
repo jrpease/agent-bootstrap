@@ -1,4 +1,5 @@
 # Claude Code projection for shared/agents/scout.md.
 # The shared body carries no pinning; this is where the tier is expressed.
 model: haiku
+effort: medium
 tools: Read, Grep, Glob, Bash
